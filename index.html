@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SignedOn — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f5f5;
+  --white: #ffffff;
+  --ink: #0a0a0a;
+  --muted: #8a8a8a;
+  --line: #e8e8e8;
+  --accent: #0a0a0a;
+  --accent-light: #f0f0f0;
+  --accent2: #555555;
+  --warning: #f59e0b;
+  --surface: #fafafa;
+  --shadow: 0 2px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+}
+
+body {
+  background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 60px;
+}
+
+/* ── PHONE SHELL ── */
+.phone {
+  width: 100%;
+  max-width: 390px;
+  background: var(--white);
+  border-radius: 40px;
+  box-shadow: var(--shadow-lg), 0 0 0 8px #0a0a0a, 0 0 0 10px #222;
+  overflow: hidden;
+  position: relative;
+  min-height: 780px;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-notch {
+  background: #1a1a1a;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notch-pill {
+  width: 90px; height: 26px;
+  background: #000;
+  border-radius: 20px;
+}
+
+/* ── STATUS BAR ── */
+.status-bar {
+  background: var(--surface);
+  padding: 6px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.status-time { color: var(--ink); }
+.status-icons { display: flex; gap: 5px; align-items: center; color: var(--ink); font-size: 10px; }
+
+/* ── SCREEN SYSTEM ── */
+.screen {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  background: var(--surface);
+  animation: slideIn 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+.screen.active { display: flex; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  padding: 14px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.topbar-back {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.topbar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.topbar-action {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.2px;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  width: 100%;
+}
+
+.btn-primary:hover { background: #333333; }
+
+.btn-secondary {
+  background: var(--line);
+  color: var(--ink);
+  width: 100%;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  width: 100%;
+}
+
+.btn-danger {
+  background: #fef2f0;
+  color: var(--accent2);
+  border: 1.5px solid #f5c4b8;
+  width: 100%;
+}
+
+/* ══════════════════════════════════
+   SCREEN 0 — HOME / JOBS AT A GLANCE
+══════════════════════════════════ */
+.home-header {
+  background: #0a0a0a;
+  padding: 20px 20px 28px;
+  color: white;
+}
+
+.home-greeting {
+  font-size: 13px;
+  opacity: 0.75;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.home-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.home-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.stat-pill {
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1.5px solid transparent;
+}
+
+.stat-pill:hover  { background: rgba(255,255,255,0.25); }
+.stat-pill:active { background: rgba(255,255,255,0.3); transform: scale(0.97); }
+
+.stat-val { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.stat-lbl { font-size: 11px; opacity: 0.75; font-weight: 500; margin-top: 1px; }
+
+.home-section {
+  padding: 16px 20px 8px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.job-row {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.job-row:active { transform: scale(0.98); }
+
+.job-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-pending { background: var(--warning); }
+.dot-signed  { background: #0a0a0a; }
+.dot-sent    { background: #6366f1; }
+
+.job-info { flex: 1; }
+.job-name  { font-size: 14px; font-weight: 700; color: var(--ink); }
+.job-sub   { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.job-amt   { font-size: 15px; font-weight: 800; color: var(--ink); }
+
+.draft-row {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform 0.15s;
+  border: 1.5px dashed var(--line);
+}
+
+.draft-row:active { transform: scale(0.98); }
+.draft-row:hover { border-color: var(--accent); }
+
+.draft-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: #fff8f0;
+  border: 1.5px solid #f5c4a0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.draft-info { flex: 1; }
+.draft-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.draft-sub  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.draft-amt  { font-size: 15px; font-weight: 800; color: var(--accent2); }
+
+.draft-delete {
+  font-size: 16px;
+  color: var(--muted);
+  padding: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.filter-tab {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1.5px solid var(--line);
+  color: var(--muted);
+  background: var(--white);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.filter-tab:hover  { border-color: var(--accent); color: var(--accent); }
+.filter-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+.fab {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: var(--accent);
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  transition: all 0.15s;
+  letter-spacing: -0.2px;
+  border: none;
+  outline: none;
+}
+
+.fab:active { transform: scale(0.97); }
+
+/* ══════════════════════════════════
+   SCREEN 1 — NEW QUOTE / CUSTOMER
+══════════════════════════════════ */
+.form-body { padding: 16px 20px; flex: 1; }
+
+.field-group { margin-bottom: 16px; }
+
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.field-input {
+  width: 100%;
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-size: 15px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink);
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field-input:focus { border-color: var(--accent); }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-area {
+  padding: 12px 20px 24px;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════
+   SCREEN 2 — ADD SERVICES
+══════════════════════════════════ */
+.services-list { padding: 12px 20px; flex: 1; }
+
+.service-item {
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.service-item.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.service-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+  transition: all 0.15s;
+}
+
+.service-item.selected .service-check {
+  background: #0a0a0a;
+  border-color: #0a0a0a;
+  color: white;
+}
+
+.service-info { flex: 1; }
+.service-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.service-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+.service-qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qty-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: transform 0.1s;
+}
+
+.qty-btn:active { transform: scale(0.9); }
+.qty-num { font-size: 15px; font-weight: 800; color: var(--ink); min-width: 16px; text-align: center; }
+.service-price { font-size: 14px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+
+.quote-total-bar {
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.total-label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.total-amount { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; }
+
+/* ══════════════════════════════════
+   SCREEN 3 — QUOTE PREVIEW
+══════════════════════════════════ */
+.quote-doc {
+  margin: 16px 20px;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+.quote-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1.5px solid var(--line);
+}
+
+.brand-logo {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: 900;
+  font-family: 'Lora', serif;
+}
+
+.brand-name { font-size: 15px; font-weight: 800; color: var(--ink); }
+.brand-contact { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+.quote-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  background: #f0f0f0;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.quote-to {
+  margin-bottom: 16px;
+}
+
+.qt-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.qt-name  { font-size: 16px; font-weight: 800; color: var(--ink); }
+.qt-addr  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+.line-items { margin: 16px 0; }
+
+.line-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  gap: 12px;
+}
+
+.line-item:last-child { border-bottom: none; }
+
+.li-name  { font-size: 13px; font-weight: 700; color: var(--ink); }
+.li-desc  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.li-price { font-size: 14px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+
+.quote-total-section {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.qt-total-lbl { font-size: 13px; font-weight: 700; color: var(--muted); }
+.qt-total-amt { font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.8px; }
+
+.quote-note {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  font-style: italic;
+  font-family: 'Lora', serif;
+}
+
+/* ══════════════════════════════════
+   SCREEN 4 — SIGNATURE
+══════════════════════════════════ */
+.sig-intro {
+  padding: 16px 20px 8px;
+  text-align: center;
+}
+
+.sig-intro h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.sig-intro p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.sig-amount {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0a0a0a;
+  letter-spacing: -1px;
+  margin: 6px 0 4px;
+}
+
+.sig-pad-wrap {
+  margin: 12px 20px;
+  background: var(--white);
+  border: 2px dashed var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sig-pad-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  pointer-events: none;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+
+#sigCanvas {
+  display: block;
+  width: 100%;
+  height: 160px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.sig-pad-wrap.signed {
+  border-color: var(--accent);
+  border-style: solid;
+}
+
+.sig-clear {
+  text-align: center;
+  padding: 6px 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sig-clear:hover { color: var(--accent2); }
+
+.sig-legal {
+  margin: 0 20px 8px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  text-align: center;
+  font-family: 'Lora', serif;
+  font-style: italic;
+}
+
+/* ══════════════════════════════════
+   SCREEN 5 — SUCCESS / SENT
+══════════════════════════════════ */
+.success-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.success-icon {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  border: 3px solid #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  margin-bottom: 20px;
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.success-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.8px;
+  margin-bottom: 8px;
+}
+
+.success-sub {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 260px;
+  margin-bottom: 28px;
+}
+
+.success-detail {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 16px 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.sd-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.sd-row:last-child { border-bottom: none; }
+.sd-label { color: var(--muted); font-weight: 500; }
+.sd-value { font-weight: 700; color: var(--ink); }
+.sd-value.green { color: #0a0a0a; }
+
+/* ══════════════════════════════════
+   DEMO LABEL (outside phone)
+══════════════════════════════════ */
+.demo-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  animation: blink 1.4s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.step-indicator {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.step-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background 0.3s;
+}
+
+.step-dot.active { background: #0a0a0a; width: 18px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="demo-label"><div class="demo-dot"></div> Interactive Demo · SignedOn</div>
+
+<div class="phone">
+  <div class="phone-notch"><div class="notch-pill"></div></div>
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <span>●●●</span><span>WiFi</span><span>🔋</span>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 0: HOME ══ -->
+  <div class="screen active" id="s0" style="position:relative">
+    <div class="home-header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="home-greeting">Good morning,</div>
+          <div class="home-name" id="homeBizName">SignedOn Demo Co.</div>
+        </div>
+        <div onclick="go(7)" style="background:rgba(255,255,255,0.15);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0;margin-top:4px" title="Settings">⚙️</div>
+      </div>
+      </div>
+      <div class="home-stats">
+        <div class="stat-pill" onclick="openDrawer('awaiting')">
+          <div class="stat-val" id="statAwaiting">3</div>
+          <div class="stat-lbl">Awaiting Signature</div>
+        </div>
+        <div class="stat-pill" onclick="openDrawer('earned')">
+          <div class="stat-val">$4,820</div>
+          <div class="stat-lbl">Earned This Month</div>
+        </div>
+        <div class="stat-pill" onclick="openDrawer('unpaid')">
+          <div class="stat-val" id="statUnpaid">2</div>
+          <div class="stat-lbl">Unpaid Invoices</div>
+        </div>
+        <div class="stat-pill" onclick="openDrawer('jobs')">
+          <div class="stat-val">8</div>
+          <div class="stat-lbl">Jobs This Month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAT DRAWER -->
+    <div id="statDrawer" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end">
+      <div id="statDrawerInner" style="background:var(--white);border-radius:24px 24px 0 0;width:100%;max-height:75%;overflow-y:auto;animation:slideUp 0.28s cubic-bezier(0.4,0,0.2,1)">
+        <div style="padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px">
+          <div id="drawerTitle" style="font-size:16px;font-weight:800;color:var(--ink)"></div>
+          <div onclick="closeDrawer()" style="font-size:20px;color:var(--muted);cursor:pointer;padding:4px 8px;line-height:1">✕</div>
+        </div>
+        <div id="drawerBody" style="padding:14px 20px 32px"></div>
+      </div>
+    </div>
+
+    <!-- DRAFTS SECTION -->
+    <div class="home-section" id="draftsSection" style="display:none">
+      <div class="section-label" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Drafts</span>
+        <span id="draftsBadge" style="background:var(--accent2);color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:0.05em"></span>
+      </div>
+      <div id="draftsList"></div>
+    </div>
+
+
+    <div class="home-section">
+      <div class="section-label">Recent Activity</div>
+      <div id="recentList">
+        <div class="job-row">
+          <div class="job-dot dot-pending"></div>
+          <div class="job-info">
+            <div class="job-name">Sarah Johnson</div>
+            <div class="job-sub">Lawn care + hedging · Awaiting signature</div>
+          </div>
+          <div class="job-amt">$340</div>
+        </div>
+        <div class="job-row">
+          <div class="job-dot dot-signed"></div>
+          <div class="job-info">
+            <div class="job-name">Tom & Lisa Park</div>
+            <div class="job-sub">Full garden redesign · Signed ✓</div>
+          </div>
+          <div class="job-amt">$1,200</div>
+        </div>
+        <div class="job-row">
+          <div class="job-dot dot-sent"></div>
+          <div class="job-info">
+            <div class="job-name">Robert Nguyen</div>
+            <div class="job-sub">Invoice sent · Payment pending</div>
+          </div>
+          <div class="job-amt">$580</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 4px 20px 0; flex-shrink:0;">
+      <button class="btn btn-outline" onclick="go(6)" style="font-size:13px;padding:11px 20px;">
+        📋 View All Jobs
+      </button>
+    </div>
+
+    <div style="padding: 10px 20px 28px; flex-shrink:0;">
+      <button class="fab" onclick="activeDraftId = null; go(1)">
+        <span style="font-size:22px;line-height:1">+</span> New Quote
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 1: CUSTOMER DETAILS ══ -->
+  <div class="screen" id="s1">
+    <div class="topbar">
+      <div class="topbar-back" onclick="go(0)">← Back</div>
+      <div class="topbar-title">New Quote</div>
+      <div class="topbar-action" onclick="go(2)">Next →</div>
+    </div>
+    <div class="form-body">
+      <div class="section-label" style="margin-bottom:14px">Customer Details</div>
+      <div class="field-group">
+        <div class="field-label">Full Name</div>
+        <input class="field-input" type="text" value="David & Karen Cole" id="custName">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Address</div>
+        <input class="field-input" type="text" value="142 Birchwood Drive">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <div class="field-label">City</div>
+          <input class="field-input" type="text" value="York">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Zip</div>
+          <input class="field-input" type="text" value="17401">
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Phone</div>
+        <input class="field-input" type="tel" value="(717) 555-0192">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Email</div>
+        <input class="field-input" type="email" value="dcole@email.com">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Job Notes (optional)</div>
+        <input class="field-input" type="text" placeholder="e.g. Front yard only, dog gate on left">
+      </div>
+    </div>
+    <div class="btn-area">
+      <button class="btn btn-primary" onclick="go(2)">Choose Services →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: SERVICES ══ -->
+  <div class="screen" id="s2">
+    <div class="topbar">
+      <div class="topbar-back" onclick="go(1)">← Back</div>
+      <div class="topbar-title">Add Services</div>
+      <div class="topbar-action" onclick="go(3)">Preview →</div>
+    </div>
+
+    <div class="services-list" id="servicesList">
+      <div class="section-label" style="margin-bottom:10px">Tap to select · Adjust quantity</div>
+    </div>
+
+    <div class="quote-total-bar">
+      <div class="total-label">Quote Total</div>
+      <div class="total-amount" id="runningTotal">$0</div>
+    </div>
+    <div class="btn-area" style="padding-top:10px">
+      <button class="btn btn-primary" onclick="go(3)">Preview Quote →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: QUOTE PREVIEW ══ -->
+  <div class="screen" id="s3" style="position:relative">
+    <div class="topbar">
+      <div class="topbar-back" onclick="go(2)">← Edit</div>
+      <div class="topbar-title">Quote Preview</div>
+      <div class="topbar-action"></div>
+    </div>
+
+    <div class="quote-doc" id="quoteDoc">
+      <div class="quote-brand">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="brand-logo" id="brandLogoLetter">S</div>
+          <div>
+            <div class="brand-name" id="brandName">SignedOn Demo Co.</div>
+            <div class="brand-contact" id="brandContact"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="026a676e6e6d427b6d77706077716b6c6771712c616d6f">[email&#160;protected]</a> · (555) 000-0000</div>
+          </div>
+        </div>
+        <div class="quote-badge">QUOTE</div>
+      </div>
+
+      <div class="quote-to">
+        <div class="qt-label">Prepared For</div>
+        <div class="qt-name" id="previewName">David & Karen Cole</div>
+        <div class="qt-addr">142 Birchwood Drive, York, PA 17401</div>
+        <div class="qt-addr" style="margin-top:4px;font-size:11px;color:var(--muted)">Quote #1042 · <span id="quoteDate"></span></div>
+      </div>
+
+      <div class="line-items" id="previewLines"></div>
+
+      <div class="quote-total-section">
+        <div class="qt-total-lbl">Total</div>
+        <div class="qt-total-amt" id="previewTotal">$290</div>
+      </div>
+
+      <div class="quote-note" id="quoteTerms">
+        This quote is valid for 30 days. Work will commence upon signed acceptance. Payment due upon completion.
+      </div>
+    </div>
+
+    <div class="btn-area">
+      <button class="btn btn-primary" onclick="go(4)" style="margin-bottom:10px">
+        <span>✍️</span> Sign Now
+      </button>
+      <button class="btn btn-outline" onclick="showEmailModal()" style="margin-bottom:10px">
+        <span>📧</span> Send to Email
+      </button>
+      <button class="btn btn-secondary" onclick="showSavedToast()">
+        <span>🗂️</span> Save for Later
+      </button>
+    </div>
+
+    <!-- Email Modal -->
+    <div id="emailModal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end;justify-content:center">
+      <div style="background:var(--white);border-radius:24px 24px 0 0;padding:28px 24px 36px;width:100%;animation:slideUp 0.25s cubic-bezier(0.4,0,0.2,1)">
+        <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:4px">Send Quote by Email</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:18px">A PDF copy will be attached automatically.</div>
+        <div class="field-label" style="margin-bottom:6px">Email Address</div>
+        <input class="field-input" type="email" value="dcole@email.com" id="emailInput" style="margin-bottom:16px">
+        <div class="field-label" style="margin-bottom:6px">Message (optional)</div>
+        <input class="field-input" type="text" placeholder="e.g. Great meeting you today!" style="margin-bottom:20px">
+        <button class="btn btn-primary" onclick="sendEmail()" style="margin-bottom:10px">📤 Send Quote</button>
+        <button class="btn btn-secondary" onclick="hideEmailModal()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Saved Toast -->
+    <div id="savedToast" style="display:none;position:absolute;bottom:32px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:12px 20px;border-radius:40px;font-size:13px;font-weight:700;white-space:nowrap;z-index:200;animation:slideUp 0.25s ease">
+      🗂️ Saved to drafts
+    </div>
+
+  </div>
+
+  <!-- ══ SCREEN 4: SIGNATURE ══ -->
+  <div class="screen" id="s4">
+    <div class="topbar">
+      <div class="topbar-back" onclick="go(3)">← Back</div>
+      <div class="topbar-title">Sign Quote</div>
+      <div class="topbar-action"></div>
+    </div>
+
+    <div class="sig-intro">
+      <p>Hand your phone to the customer.</p>
+      <div class="sig-amount" id="sigAmount">$290</div>
+      <p>Sign below to accept this quote.</p>
+    </div>
+
+    <div class="sig-pad-wrap" id="sigPadWrap">
+      <div class="sig-pad-label" id="sigLabel">✍️ Sign here</div>
+      <canvas id="sigCanvas"></canvas>
+    </div>
+
+    <div class="sig-clear" onclick="clearSig()">Clear signature</div>
+
+    <div class="sig-legal">
+      By signing, the customer agrees to the quoted services and pricing. A copy will be sent to their email automatically.
+    </div>
+
+    <div class="btn-area">
+      <button class="btn btn-primary" id="acceptBtn" onclick="go(5)" style="opacity:0.4;pointer-events:none">
+        ✓ Accept & Generate Invoice
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 5: SUCCESS ══ -->
+  <div class="screen" id="s5">
+    <div class="success-screen">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Quote Signed!</div>
+      <div class="success-sub" id="successMsg">You're in! We'll be in touch within 24 hours to get you set up.</div>
+
+      <div class="success-detail">
+        <div class="sd-row">
+          <span class="sd-label">Customer</span>
+          <span class="sd-value">David & Karen Cole</span>
+        </div>
+        <div class="sd-row">
+          <span class="sd-label">Total</span>
+          <span class="sd-value" id="finalTotal">$290</span>
+        </div>
+        <div class="sd-row">
+          <span class="sd-label">Status</span>
+          <span class="sd-value green">✓ Signed & Invoiced</span>
+        </div>
+        <div class="sd-row">
+          <span class="sd-label">Sent to</span>
+          <span class="sd-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0165626e6d6441646c60686d2f626e6c">[email&#160;protected]</a></span>
+        </div>
+        <div class="sd-row">
+          <span class="sd-label">PDF</span>
+          <span class="sd-value green">✓ Attached</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="go(0)" style="width:100%;margin-bottom:10px">← Back to Home</button>
+      <button class="btn btn-outline" onclick="go(0)" style="width:100%">Send Payment Link</button>
+    </div>
+  <!-- ══ SCREEN 6: ALL JOBS ══ -->
+  <div class="screen" id="s6">
+    <div class="topbar">
+      <div class="topbar-back" onclick="go(0)">← Home</div>
+      <div class="topbar-title">All Jobs</div>
+      <div class="topbar-action"></div>
+    </div>
+
+    <!-- FILTER TABS -->
+    <div style="padding:12px 16px 0;background:var(--white);border-bottom:1px solid var(--line);flex-shrink:0;">
+      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none">
+        <div class="filter-tab active" onclick="filterJobs('all', this)">All</div>
+        <div class="filter-tab" onclick="filterJobs('action', this)">Needs Action</div>
+        <div class="filter-tab" onclick="filterJobs('signed', this)">Signed</div>
+        <div class="filter-tab" onclick="filterJobs('paid', this)">Paid</div>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div style="padding:12px 16px 8px;background:var(--surface);flex-shrink:0;">
+      <input class="field-input" type="text" placeholder="🔍  Search by name or service..." oninput="searchJobs(this.value)" style="font-size:13px;padding:10px 14px;background:var(--white)">
+    </div>
+
+    <!-- JOB LIST -->
+    <div id="allJobsList" style="padding:0 16px 32px;flex:1;overflow-y:auto"></div>
+  </div>
+
+  <!-- ══ SCREEN 7: SETTINGS ══ -->
+  <div class="screen" id="s7">
+    <div class="topbar">
+      <div class="topbar-back" onclick="go(0)">← Home</div>
+      <div class="topbar-title">Settings</div>
+      <div class="topbar-action" id="settingsSaveBtn" onclick="saveSettings()" style="color:var(--accent);font-weight:800">Save</div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:16px 20px 40px">
+
+      <!-- BUSINESS INFO -->
+      <div class="section-label" style="margin-bottom:12px">Business Info</div>
+      <div style="background:var(--white);border-radius:16px;padding:16px;margin-bottom:20px;border:1px solid var(--line)">
+        <div class="field-group">
+          <div class="field-label">Business Name</div>
+          <input class="field-input" id="setBizName" type="text" placeholder="Your business name">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Email</div>
+          <input class="field-input" id="setBizEmail" type="email" placeholder="hello@yourbusiness.com">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <div class="field-label">Phone</div>
+          <input class="field-input" id="setBizPhone" type="tel" placeholder="(555) 000-0000">
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="section-label" style="margin-bottom:0">Services & Pricing</div>
+        <div onclick="addServiceRow()" style="font-size:12px;font-weight:700;color:var(--accent);cursor:pointer">+ Add Service</div>
+      </div>
+      <div id="settingsServicesList" style="margin-bottom:20px"></div>
+
+      <!-- QUOTE TERMS -->
+      <div class="section-label" style="margin-bottom:12px">Quote Terms</div>
+      <div style="background:var(--white);border-radius:16px;padding:16px;margin-bottom:20px;border:1px solid var(--line)">
+        <div class="field-label" style="margin-bottom:6px">Footer text on every quote</div>
+        <textarea id="setTerms" class="field-input" rows="3" style="resize:none;line-height:1.5;font-family:'Plus Jakarta Sans',sans-serif"></textarea>
+      </div>
+
+      <!-- SUCCESS MESSAGE -->
+      <div class="section-label" style="margin-bottom:12px">Success Screen Message</div>
+      <div style="background:var(--white);border-radius:16px;padding:16px;margin-bottom:24px;border:1px solid var(--line)">
+        <div class="field-label" style="margin-bottom:6px">Shown after customer signs</div>
+        <textarea id="setSuccessMsg" class="field-input" rows="2" style="resize:none;line-height:1.5;font-family:'Plus Jakarta Sans',sans-serif"></textarea>
+      </div>
+
+      <!-- RESET -->
+      <button class="btn btn-danger" onclick="resetConfig()">Reset to Defaults</button>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="step-indicator" id="stepDots">
+  <div class="step-dot active"></div>
+  <div class="step-dot"></div>
+  <div class="step-dot"></div>
+  <div class="step-dot"></div>
+  <div class="step-dot"></div>
+  <div class="step-dot"></div>
+  <div class="step-dot"></div>
+  <div class="step-dot"></div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── CONFIG STORE (persists to localStorage) ──
+const CONFIG_KEY = 'signedon_config';
+
+const defaultConfig = {
+  business: {
+    name:    'SignedOn Demo Co.',
+    email:   'hello@yourbusiness.com',
+    phone:   '(555) 000-0000',
+  },
+  services: [
+    { name: 'Starter Plan',    desc: 'Up to 20 quotes/month',         rate: 29,  qty: 1, selected: true  },
+    { name: 'Pro Plan',        desc: 'Unlimited quotes + invoices',    rate: 59,  qty: 1, selected: false },
+    { name: 'Annual Starter',  desc: 'Starter billed yearly (save 20%)', rate: 279, qty: 1, selected: false },
+    { name: 'Annual Pro',      desc: 'Pro billed yearly (save 20%)',   rate: 569, qty: 1, selected: false },
+    { name: 'Setup & Onboarding', desc: 'One-time guided setup call',  rate: 99,  qty: 1, selected: false },
+  ],
+  terms:   'This quote is valid for 30 days. Payment due upon acceptance.',
+  successMsg: "You're in! We'll be in touch within 24 hours to get you set up.",
+};
+
+function loadConfig() {
+  try {
+    const saved = localStorage.getItem(CONFIG_KEY);
+    if (!saved) return JSON.parse(JSON.stringify(defaultConfig));
+    const parsed = JSON.parse(saved);
+    // Deep merge so new default fields are always present
+    return {
+      business: { ...defaultConfig.business, ...parsed.business },
+      services: parsed.services || JSON.parse(JSON.stringify(defaultConfig.services)),
+      terms:      parsed.terms      ?? defaultConfig.terms,
+      successMsg: parsed.successMsg ?? defaultConfig.successMsg,
+    };
+  } catch { return JSON.parse(JSON.stringify(defaultConfig)); }
+}
+
+function saveConfig(cfg) {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+}
+
+let config   = loadConfig();
+let services = config.services.map(s => ({ ...s, qty: s.qty || 1 }));
+
+
+function total() {
+  return services.reduce((s, svc) => svc.selected ? s + svc.rate * svc.qty : s, 0);
+}
+
+function fmt(n) { return '$' + n.toLocaleString(); }
+
+// ── NAVIGATION ──
+function go(n) {
+  document.querySelectorAll('.screen').forEach((s,i) => {
+    s.classList.toggle('active', i === n);
+  });
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    d.classList.toggle('active', i === n);
+  });
+  if (n === 2) renderServicesScreen();
+  if (n === 3) buildPreview();
+  if (n === 4) {
+    document.getElementById('sigAmount').textContent = fmt(total());
+    initCanvas();
+  }
+  if (n === 5) {
+    document.getElementById('finalTotal').textContent = fmt(total());
+    // Push to recent activity
+    const name = document.getElementById('custName').value || 'Customer';
+    const selected = services.filter(s => s.selected);
+    const summary = selected.map(s => s.name).join(', ');
+    addToRecent(name, summary, total());
+    // If this came from a draft, remove it
+    if (activeDraftId !== null) {
+      drafts = drafts.filter(d => d.id !== activeDraftId);
+      activeDraftId = null;
+      renderDrafts();
+    }
+  }
+  if (n === 6) renderAllJobs();
+  if (n === 7) renderSettingsScreen();
+}
+
+// ── SERVICES ──
+function toggleService(i) {
+  services[i].selected = !services[i].selected;
+  const el = document.getElementById('svc' + i);
+  el.classList.toggle('selected', services[i].selected);
+  el.querySelector('.service-check').textContent = services[i].selected ? '✓' : '';
+  updatePrices();
+}
+
+function changeQty(i, delta) {
+  services[i].qty = Math.max(1, services[i].qty + delta);
+  document.getElementById('qty' + i).textContent = services[i].qty;
+  document.getElementById('price' + i).textContent = fmt(services[i].rate * services[i].qty);
+  updatePrices();
+}
+
+function updatePrices() {
+  document.getElementById('runningTotal').textContent = fmt(total());
+}
+
+// ── QUOTE PREVIEW ──
+function buildPreview() {
+  const d = new Date();
+  document.getElementById('quoteDate').textContent = d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  document.getElementById('previewTotal').textContent = fmt(total());
+
+  const name = document.getElementById('custName').value;
+  document.getElementById('previewName').textContent = name;
+
+  const lines = document.getElementById('previewLines');
+  lines.innerHTML = '';
+  services.filter(s => s.selected).forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'line-item';
+    div.innerHTML = `
+      <div>
+        <div class="li-name">${s.name}${s.qty > 1 ? ' × ' + s.qty : ''}</div>
+        <div class="li-desc">${s.desc}</div>
+      </div>
+      <div class="li-price">${fmt(s.rate * s.qty)}</div>`;
+    lines.appendChild(div);
+  });
+}
+
+// ── SIGNATURE CANVAS ──
+let drawing = false, hasSig = false;
+
+function initCanvas() {
+  const canvas = document.getElementById('sigCanvas');
+  const wrap   = document.getElementById('sigPadWrap');
+  const rect   = wrap.getBoundingClientRect();
+  canvas.width  = rect.width * window.devicePixelRatio || 350;
+  canvas.height = 160 * window.devicePixelRatio || 160;
+  canvas.style.width  = '100%';
+  canvas.style.height = '160px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+  ctx.strokeStyle = '#111210';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+
+  canvas.addEventListener('mousedown',  e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('mousemove',  e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); onDraw(); });
+  canvas.addEventListener('mouseup',    () => { drawing = false; });
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('touchmove',  e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); onDraw(); });
+  canvas.addEventListener('touchend',   () => { drawing = false; });
+}
+
+function onDraw() {
+  if (!hasSig) {
+    hasSig = true;
+    document.getElementById('sigLabel').style.opacity = '0';
+    document.getElementById('sigPadWrap').classList.add('signed');
+    const btn = document.getElementById('acceptBtn');
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  }
+}
+
+function clearSig() {
+  const canvas = document.getElementById('sigCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hasSig = false;
+  document.getElementById('sigLabel').style.opacity = '1';
+  document.getElementById('sigPadWrap').classList.remove('signed');
+  const btn = document.getElementById('acceptBtn');
+  btn.style.opacity = '0.4';
+  btn.style.pointerEvents = 'none';
+}
+
+// ── EMAIL MODAL ──
+function showEmailModal() {
+  const modal = document.getElementById('emailModal');
+  modal.style.display = 'flex';
+}
+
+function hideEmailModal() {
+  document.getElementById('emailModal').style.display = 'none';
+}
+
+function sendEmail() {
+  hideEmailModal();
+  // Show confirmation toast
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:absolute;bottom:32px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;padding:12px 20px;border-radius:40px;font-size:13px;font-weight:700;white-space:nowrap;z-index:200;animation:slideUp 0.25s ease';
+  toast.textContent = '✓ Quote sent to ' + (document.getElementById('emailInput').value || 'customer');
+  document.getElementById('s3').appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function renderServicesScreen() {
+  const list = document.getElementById('servicesList');
+  if (!list) return;
+  // Keep the label, replace the rest
+  list.innerHTML = '<div class="section-label" style="margin-bottom:10px">Tap to select · Adjust quantity</div>';
+  services.forEach((svc, i) => {
+    const div = document.createElement('div');
+    div.className = 'service-item' + (svc.selected ? ' selected' : '');
+    div.id = 'svc' + i;
+    div.onclick = () => toggleService(i);
+    div.innerHTML = `
+      <div class="service-check">${svc.selected ? '✓' : ''}</div>
+      <div class="service-info">
+        <div class="service-name">${svc.name}</div>
+        <div class="service-desc">${svc.desc}</div>
+      </div>
+      <div class="service-qty" onclick="event.stopPropagation()">
+        <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+        <span class="qty-num" id="qty${i}">${svc.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+      </div>
+      <div class="service-price" id="price${i}">${fmt(svc.rate * svc.qty)}</div>`;
+    list.appendChild(div);
+  });
+  updatePrices();
+}
+
+// ── SETTINGS ──
+function renderSettingsScreen() {
+  const c = config;
+  document.getElementById('setBizName').value    = c.business.name;
+  document.getElementById('setBizEmail').value   = c.business.email;
+  document.getElementById('setBizPhone').value   = c.business.phone;
+  document.getElementById('setTerms').value      = c.terms;
+  document.getElementById('setSuccessMsg').value = c.successMsg;
+  renderSettingsServices();
+}
+
+function renderSettingsServices() {
+  const list = document.getElementById('settingsServicesList');
+  list.innerHTML = config.services.map((s, i) => `
+    <div style="background:var(--white);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--line)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Service ${i+1}</div>
+        <div onclick="removeServiceRow(${i})" style="font-size:12px;font-weight:700;color:#e05c4b;cursor:pointer">Remove</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Name</div>
+        <input class="field-input" style="font-size:14px;padding:10px 12px" value="${s.name}" oninput="updateServiceField(${i},'name',this.value)" placeholder="e.g. Starter Plan">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Description</div>
+        <input class="field-input" style="font-size:14px;padding:10px 12px" value="${s.desc}" oninput="updateServiceField(${i},'desc',this.value)" placeholder="e.g. Up to 20 quotes/month">
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <div class="field-label">Price ($)</div>
+        <input class="field-input" style="font-size:14px;padding:10px 12px" type="number" value="${s.rate}" oninput="updateServiceField(${i},'rate',parseFloat(this.value)||0)" placeholder="0">
+      </div>
+    </div>`).join('');
+}
+
+function updateServiceField(i, field, value) {
+  config.services[i][field] = value;
+}
+
+function addServiceRow() {
+  config.services.push({ name: '', desc: '', rate: 0, qty: 1, selected: false });
+  renderSettingsServices();
+}
+
+function removeServiceRow(i) {
+  config.services.splice(i, 1);
+  renderSettingsServices();
+}
+
+function saveSettings() {
+  config.business.name  = document.getElementById('setBizName').value.trim()  || defaultConfig.business.name;
+  config.business.email = document.getElementById('setBizEmail').value.trim() || defaultConfig.business.email;
+  config.business.phone = document.getElementById('setBizPhone').value.trim() || defaultConfig.business.phone;
+  config.terms          = document.getElementById('setTerms').value.trim()    || defaultConfig.terms;
+  config.successMsg     = document.getElementById('setSuccessMsg').value.trim() || defaultConfig.successMsg;
+
+  saveConfig(config);
+
+  // Rebuild services from config
+  services.length = 0;
+  config.services.forEach(s => services.push({ ...s, qty: 1, selected: false }));
+
+  applyConfig();
+
+  // Show saved confirmation
+  const btn = document.getElementById('settingsSaveBtn');
+  btn.textContent = '✓ Saved';
+  btn.style.color = '#2a7a55';
+  setTimeout(() => { btn.textContent = 'Save'; btn.style.color = 'var(--accent)'; }, 1800);
+}
+
+function applyConfig() {
+  const b = config.business;
+  // Home screen
+  const homeEl = document.getElementById('homeBizName');
+  if (homeEl) homeEl.textContent = b.name;
+  // Quote doc
+  const brandName = document.getElementById('brandName');
+  if (brandName) brandName.textContent = b.name;
+  const brandContact = document.getElementById('brandContact');
+  if (brandContact) brandContact.textContent = `${b.email} · ${b.phone}`;
+  const brandLogo = document.getElementById('brandLogoLetter');
+  if (brandLogo) brandLogo.textContent = (b.name || 'S')[0].toUpperCase();
+  // Terms
+  const termsEl = document.getElementById('quoteTerms');
+  if (termsEl) termsEl.textContent = config.terms;
+  // Success msg
+  const successEl = document.getElementById('successMsg');
+  if (successEl) successEl.textContent = config.successMsg;
+}
+
+function resetConfig() {
+  if (!confirm('Reset everything to defaults?')) return;
+  localStorage.removeItem(CONFIG_KEY);
+  config = JSON.parse(JSON.stringify(defaultConfig));
+  services.length = 0;
+  config.services.forEach(s => services.push({ ...s, qty: 1, selected: false }));
+  saveConfig(config);
+  applyConfig();
+  renderSettingsScreen();
+  const btn = document.getElementById('settingsSaveBtn');
+  btn.textContent = '✓ Reset';
+  setTimeout(() => { btn.textContent = 'Save'; }, 1800);
+}
+
+// ── ALL JOBS ──
+const allJobs = [
+  { name: 'Sarah Johnson',   sub: 'Lawn care + hedging',  amt: 340,  status: 'awaiting', date: 'Feb 21' },
+  { name: 'Carlos Mendez',   sub: 'Driveway edging',      amt: 180,  status: 'awaiting', date: 'Feb 20' },
+  { name: 'Priya Patel',     sub: 'Spring cleanup',       amt: 260,  status: 'awaiting', date: 'Feb 19' },
+  { name: 'Tom & Lisa Park', sub: 'Full garden redesign', amt: 1200, status: 'signed',   date: 'Feb 18' },
+  { name: 'Robert Nguyen',   sub: 'Lawn + hedging',       amt: 580,  status: 'unpaid',   date: 'Feb 17' },
+  { name: 'Angela Reyes',    sub: 'Mulch beds × 4',       amt: 260,  status: 'unpaid',   date: 'Feb 16' },
+  { name: 'James O\'Brien',  sub: 'Leaf cleanup',         amt: 330,  status: 'paid',     date: 'Feb 14' },
+  { name: 'Wei & Fang Liu',  sub: 'Weed control',         amt: 165,  status: 'paid',     date: 'Feb 12' },
+  { name: 'Dana Kowalski',   sub: 'Seasonal trim',        amt: 420,  status: 'paid',     date: 'Feb 10' },
+  { name: 'Marcus Bell',     sub: 'Full lawn care',       amt: 510,  status: 'paid',     date: 'Feb 8'  },
+  { name: 'Susan Hargrove',  sub: 'Hedge shaping',        amt: 355,  status: 'paid',     date: 'Feb 5'  },
+];
+
+let currentFilter = 'all';
+let currentSearch = '';
+
+const statusConfig = {
+  awaiting: { label: 'Awaiting Signature', dot: 'dot-pending', color: '#f59e0b' },
+  signed:   { label: 'Signed',             dot: 'dot-signed',  color: 'var(--accent)' },
+  unpaid:   { label: 'Invoice Unpaid',     dot: 'dot-sent',    color: '#6366f1' },
+  paid:     { label: 'Paid ✓',             dot: 'dot-signed',  color: 'var(--accent)' },
+};
+
+function filterJobs(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAllJobs();
+}
+
+function searchJobs(val) {
+  currentSearch = val.toLowerCase();
+  renderAllJobs();
+}
+
+function renderAllJobs() {
+  // Merge in live completed jobs
+  const liveJobs = (window._completedJobs || []).map(j => ({
+    name: j.name, sub: j.summary, amt: j.amount, status: 'signed', date: 'Today'
+  }));
+  const jobs = [...liveJobs, ...allJobs];
+
+  let filtered = jobs.filter(j => {
+    const matchSearch = !currentSearch ||
+      j.name.toLowerCase().includes(currentSearch) ||
+      j.sub.toLowerCase().includes(currentSearch);
+    const matchFilter =
+      currentFilter === 'all' ? true :
+      currentFilter === 'action' ? (j.status === 'awaiting' || j.status === 'unpaid') :
+      currentFilter === 'signed' ? (j.status === 'signed') :
+      currentFilter === 'paid'   ? (j.status === 'paid') : true;
+    return matchSearch && matchFilter;
+  });
+
+  const list = document.getElementById('allJobsList');
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted);font-size:14px;font-weight:500">No jobs found</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(j => {
+    const cfg = statusConfig[j.status];
+    return `
+      <div class="job-row" style="margin-top:10px">
+        <div class="job-dot ${cfg.dot}"></div>
+        <div class="job-info">
+          <div class="job-name">${j.name}</div>
+          <div class="job-sub">${j.sub} · ${j.date}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <div class="job-amt">${fmt(j.amt)}</div>
+          <div style="font-size:10px;font-weight:700;color:${cfg.color};white-space:nowrap">${cfg.label}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── STAT DRAWER ──
+const drawerData = {
+  awaiting: {
+    title: '⏳ Awaiting Signature',
+    items: [
+      { name: 'Sarah Johnson',    sub: 'Lawn care + hedging',  amt: '$340',   dot: 'dot-pending' },
+      { name: 'Carlos Mendez',    sub: 'Driveway edging',      amt: '$180',   dot: 'dot-pending' },
+      { name: 'Priya Patel',      sub: 'Spring cleanup',       amt: '$260',   dot: 'dot-pending' },
+    ]
+  },
+  earned: {
+    title: '💰 Earned This Month',
+    items: [
+      { name: 'Tom & Lisa Park',  sub: 'Full garden redesign', amt: '$1,200', dot: 'dot-signed' },
+      { name: 'Robert Nguyen',    sub: 'Lawn + hedging',       amt: '$580',   dot: 'dot-signed' },
+      { name: 'Angela Reyes',     sub: 'Mulch beds × 4',       amt: '$260',   dot: 'dot-signed' },
+      { name: 'James O\'Brien',   sub: 'Leaf cleanup',         amt: '$330',   dot: 'dot-signed' },
+      { name: 'Wei & Fang Liu',   sub: 'Weed control',         amt: '$165',   dot: 'dot-signed' },
+      { name: 'Dana Kowalski',    sub: 'Seasonal trim',        amt: '$420',   dot: 'dot-signed' },
+      { name: 'Marcus Bell',      sub: 'Full lawn care',       amt: '$510',   dot: 'dot-signed' },
+      { name: 'Susan Hargrove',   sub: 'Hedge shaping',        amt: '$355',   dot: 'dot-signed' },
+    ],
+    footer: true
+  },
+  unpaid: {
+    title: '🧾 Unpaid Invoices',
+    items: [
+      { name: 'Robert Nguyen',    sub: 'Invoice sent 3 days ago', amt: '$580', dot: 'dot-sent', action: 'Send Reminder' },
+      { name: 'Angela Reyes',     sub: 'Invoice sent today',      amt: '$260', dot: 'dot-sent', action: 'Send Reminder' },
+    ]
+  },
+  jobs: {
+    title: '📋 Jobs This Month',
+    items: [
+      { name: 'Tom & Lisa Park',  sub: 'Full garden redesign', amt: '$1,200', dot: 'dot-signed' },
+      { name: 'Robert Nguyen',    sub: 'Lawn + hedging',       amt: '$580',   dot: 'dot-sent'   },
+      { name: 'Angela Reyes',     sub: 'Mulch beds × 4',       amt: '$260',   dot: 'dot-sent'   },
+      { name: 'James O\'Brien',   sub: 'Leaf cleanup',         amt: '$330',   dot: 'dot-signed' },
+      { name: 'Wei & Fang Liu',   sub: 'Weed control',         amt: '$165',   dot: 'dot-signed' },
+      { name: 'Dana Kowalski',    sub: 'Seasonal trim',        amt: '$420',   dot: 'dot-signed' },
+      { name: 'Marcus Bell',      sub: 'Full lawn care',       amt: '$510',   dot: 'dot-signed' },
+      { name: 'Susan Hargrove',   sub: 'Hedge shaping',        amt: '$355',   dot: 'dot-signed' },
+    ]
+  }
+};
+
+function openDrawer(type) {
+  const data = drawerData[type];
+  document.getElementById('drawerTitle').textContent = data.title;
+
+  // Merge in any newly signed jobs for relevant views
+  const extra = window._completedJobs || [];
+
+  let rows = [...data.items];
+  if (type === 'jobs' || type === 'earned') {
+    extra.forEach(j => rows.unshift({ name: j.name, sub: j.summary, amt: fmt(j.amount), dot: 'dot-signed' }));
+  }
+
+  let html = '';
+  rows.forEach(item => {
+    html += `
+      <div class="job-row" style="margin-bottom:8px">
+        <div class="job-dot ${item.dot}"></div>
+        <div class="job-info">
+          <div class="job-name">${item.name}</div>
+          <div class="job-sub">${item.sub}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <div class="job-amt">${item.amt}</div>
+          ${item.action ? `<div style="font-size:11px;font-weight:700;color:var(--accent);cursor:pointer">${item.action}</div>` : ''}
+        </div>
+      </div>`;
+  });
+
+  if (data.footer) {
+    const total = rows.reduce((s, r) => s + parseInt(r.amt.replace(/\D/g,'')), 0);
+    html += `<div style="background:var(--accent-light);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <div style="font-size:13px;font-weight:700;color:var(--muted)">Total Earned</div>
+      <div style="font-size:20px;font-weight:800;color:var(--accent)">$${total.toLocaleString()}</div>
+    </div>`;
+  }
+
+  document.getElementById('drawerBody').innerHTML = html;
+  const drawer = document.getElementById('statDrawer');
+  drawer.style.display = 'flex';
+}
+
+function closeDrawer() {
+  document.getElementById('statDrawer').style.display = 'none';
+}
+
+// ── RECENT ACTIVITY ──
+function addToRecent(name, summary, amount) {
+  // Store for drawer
+  window._completedJobs = window._completedJobs || [];
+  window._completedJobs.unshift({ name, summary, amount });
+
+  const list = document.getElementById('recentList');
+  const row = document.createElement('div');
+  row.className = 'job-row';
+  row.style.animation = 'slideUp 0.3s cubic-bezier(0.4,0,0.2,1)';
+  row.innerHTML = `
+    <div class="job-dot dot-signed"></div>
+    <div class="job-info">
+      <div class="job-name">${name}</div>
+      <div class="job-sub">${summary} · Signed ✓</div>
+    </div>
+    <div class="job-amt">${fmt(amount)}</div>
+  `;
+  list.insertBefore(row, list.firstChild);
+}
+
+// ── DRAFTS ──
+let drafts = [];
+let activeDraftId = null;
+
+function showSavedToast() {
+  const name = document.getElementById('custName').value || 'Unknown Customer';
+  const selected = services.filter(s => s.selected);
+  const summary = selected.map(s => s.name).join(', ');
+  const draft = {
+    id: Date.now(),
+    name,
+    summary: summary || 'No services selected',
+    amount: total(),
+    date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'})
+  };
+  drafts.unshift(draft);
+  renderDrafts();
+
+  const toast = document.getElementById('savedToast');
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2000);
+  setTimeout(() => go(0), 1000);
+}
+
+function renderDrafts() {
+  const section = document.getElementById('draftsSection');
+  const list    = document.getElementById('draftsList');
+  const badge   = document.getElementById('draftsBadge');
+
+  if (drafts.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  badge.textContent = drafts.length + ' unsent';
+  list.innerHTML = '';
+
+  drafts.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.className = 'draft-row';
+    row.innerHTML = `
+      <div class="draft-icon">📝</div>
+      <div class="draft-info">
+        <div class="draft-name">${d.name}</div>
+        <div class="draft-sub">${d.summary} · Saved ${d.date}</div>
+      </div>
+      <div class="draft-amt">$${d.amount.toLocaleString()}</div>
+      <div class="draft-delete" title="Delete draft" onclick="deleteDraft(${i}, event)">✕</div>
+    `;
+    row.addEventListener('click', () => { activeDraftId = d.id; go(3)
