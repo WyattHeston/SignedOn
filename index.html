@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>SignedOn — Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>SignedOn</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,37 +26,28 @@
 }
 
 body {
-  background: var(--bg);
+  background: var(--surface);
   font-family: 'Plus Jakarta Sans', sans-serif;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 24px 16px 60px;
 }
 
-/* ── PHONE SHELL ── */
+/* ── FULL SCREEN APP SHELL ── */
 .phone {
   width: 100%;
-  max-width: 390px;
+  height: 100vh;
+  height: 100dvh;
   background: var(--white);
-  border-radius: 40px;
-  box-shadow: var(--shadow-lg), 0 0 0 8px #0a0a0a, 0 0 0 10px #222;
-  overflow: hidden;
-  position: relative;
-  min-height: 780px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
-.phone-notch {
-  background: #1a1a1a;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+.phone-notch { display: none; }
 
 .notch-pill {
   width: 90px; height: 26px;
@@ -63,17 +56,7 @@ body {
 }
 
 /* ── STATUS BAR ── */
-.status-bar {
-  background: var(--surface);
-  padding: 6px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
-  border-bottom: 1px solid var(--line);
-}
+.status-bar { display: none; }
 
 .status-time { color: var(--ink); }
 .status-icons { display: flex; gap: 5px; align-items: center; color: var(--ink); font-size: 10px; }
@@ -84,11 +67,15 @@ body {
   flex-direction: column;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--surface);
-  animation: slideIn 0.28s cubic-bezier(0.4,0,0.2,1);
+  -webkit-overflow-scrolling: touch;
 }
 
-.screen.active { display: flex; }
+.screen.active {
+  display: flex;
+  height: 100%;
+}
 
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(20px); }
@@ -103,6 +90,7 @@ body {
 /* ── TOPBAR ── */
 .topbar {
   padding: 14px 20px 12px;
+  padding-top: max(14px, calc(10px + env(safe-area-inset-top)));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -187,8 +175,10 @@ body {
 ══════════════════════════════════ */
 .home-header {
   background: #0a0a0a;
-  padding: 20px 20px 28px;
+  padding: 52px 20px 28px;
+  padding-top: max(52px, calc(44px + env(safe-area-inset-top)));
   color: white;
+  flex-shrink: 0;
 }
 
 .home-greeting {
@@ -773,16 +763,7 @@ body {
 </head>
 <body>
 
-<div class="demo-label"><div class="demo-dot"></div> Interactive Demo · SignedOn</div>
-
 <div class="phone">
-  <div class="phone-notch"><div class="notch-pill"></div></div>
-  <div class="status-bar">
-    <span class="status-time">9:41</span>
-    <div class="status-icons">
-      <span>●●●</span><span>WiFi</span><span>🔋</span>
-    </div>
-  </div>
 
   <!-- ══ SCREEN 0: HOME ══ -->
   <div class="screen active" id="s0" style="position:relative">
@@ -1165,18 +1146,7 @@ body {
 
 </div>
 
-<div class="step-indicator" id="stepDots">
-  <div class="step-dot active"></div>
-  <div class="step-dot"></div>
-  <div class="step-dot"></div>
-  <div class="step-dot"></div>
-  <div class="step-dot"></div>
-  <div class="step-dot"></div>
-  <div class="step-dot"></div>
-  <div class="step-dot"></div>
-</div>
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── CONFIG STORE (persists to localStorage) ──
 const CONFIG_KEY = 'signedon_config';
 
