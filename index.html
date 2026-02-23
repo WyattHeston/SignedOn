@@ -29,7 +29,6 @@ body {
   background: var(--surface);
   font-family: 'Plus Jakarta Sans', sans-serif;
   height: 100vh;
-  height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -39,7 +38,6 @@ body {
 .phone {
   width: 100%;
   height: 100vh;
-  height: 100dvh;
   background: var(--white);
   display: flex;
   flex-direction: column;
@@ -1176,8 +1174,8 @@ function loadConfig() {
     return {
       business: { ...defaultConfig.business, ...parsed.business },
       services: parsed.services || JSON.parse(JSON.stringify(defaultConfig.services)),
-      terms:      parsed.terms      ?? defaultConfig.terms,
-      successMsg: parsed.successMsg ?? defaultConfig.successMsg,
+      terms:      parsed.terms      !== undefined ? parsed.terms      : defaultConfig.terms,
+      successMsg: parsed.successMsg !== undefined ? parsed.successMsg : defaultConfig.successMsg,
     };
   } catch { return JSON.parse(JSON.stringify(defaultConfig)); }
 }
@@ -1200,9 +1198,6 @@ function fmt(n) { return '$' + n.toLocaleString(); }
 function go(n) {
   document.querySelectorAll('.screen').forEach((s,i) => {
     s.classList.toggle('active', i === n);
-  });
-  document.querySelectorAll('.step-dot').forEach((d,i) => {
-    d.classList.toggle('active', i === n);
   });
   if (n === 2) renderServicesScreen();
   if (n === 3) buildPreview();
@@ -1465,17 +1460,26 @@ function applyConfig() {
 }
 
 function resetConfig() {
-  if (!confirm('Reset everything to defaults?')) return;
-  localStorage.removeItem(CONFIG_KEY);
-  config = JSON.parse(JSON.stringify(defaultConfig));
-  services.length = 0;
-  config.services.forEach(s => services.push({ ...s, qty: 1, selected: false }));
-  saveConfig(config);
-  applyConfig();
-  renderSettingsScreen();
-  const btn = document.getElementById('settingsSaveBtn');
-  btn.textContent = '✓ Reset';
-  setTimeout(() => { btn.textContent = 'Save'; }, 1800);
+  // Show inline confirm instead of dialog (iOS blocks confirm())
+  const btn = document.querySelector('[onclick="resetConfig()"]');
+  if (btn.dataset.confirming) {
+    btn.dataset.confirming = '';
+    btn.textContent = 'Reset to Defaults';
+    localStorage.removeItem(CONFIG_KEY);
+    config = JSON.parse(JSON.stringify(defaultConfig));
+    services.length = 0;
+    config.services.forEach(function(s) { services.push(Object.assign({}, s, {qty: 1, selected: false})); });
+    saveConfig(config);
+    applyConfig();
+    renderSettingsScreen();
+  } else {
+    btn.dataset.confirming = 'yes';
+    btn.textContent = 'Tap again to confirm reset';
+    setTimeout(function() {
+      btn.dataset.confirming = '';
+      btn.textContent = 'Reset to Defaults';
+    }, 3000);
+  }
 }
 
 // ── ALL JOBS ──
