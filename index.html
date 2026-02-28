@@ -2898,7 +2898,9 @@ function upsertDraft(data) {
 }
 
 function showSavedToast() {
-  upsertDraft(buildDraftData('draft'));
+  const existingDraft = activeDraftId != null ? drafts.find(d => d.id == activeDraftId) : null;
+  const keepStatus = existingDraft && existingDraft.status === 'sent' ? 'sent' : 'draft';
+  upsertDraft(buildDraftData(keepStatus));
   renderDrafts();
 
   const toast = document.getElementById('savedToast');
