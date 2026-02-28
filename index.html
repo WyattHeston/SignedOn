@@ -6,58 +6,61 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>SignedOn</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #f5f5f5;
-  --white: #ffffff;
-  --ink: #0a0a0a;
-  --muted: #8a8a8a;
-  --line: #e8e8e8;
-  --accent: #0a0a0a;
-  --accent-light: #f0f0f0;
-  --accent2: #555555;
-  --warning: #f59e0b;
-  --surface: #fafafa;
-  --shadow: 0 2px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+  --paper:   #F7F4EF;
+  --paper2:  #F0EDE6;
+  --ink:     #1A1712;
+  --ink2:    #2E2B26;
+  --muted:   #9A9388;
+  --rule:    #E2DDD6;
+  --white:   #FFFFFF;
+  --gold:    #C9A84C;
+  --gold-lt: #F5EDD6;
+
+  /* App UI aliases */
+  --bg:      #F7F4EF;
+  --surface: #FFFFFF;
+  --line:    #EAE6DF;
+
+  /* Status colours */
+  --s-draft:    #C0BAB0;
+  --s-sent:     #7B8CDE;
+  --s-signed:   #1A1712;
+  --s-service:  #D4963A;
+  --s-invoiced: #C0522A;
+  --s-paid:     #3A8C5C;
+
+  /* Shadows */
+  --shadow:    0 1px 3px rgba(26,23,18,0.06), 0 1px 8px rgba(26,23,18,0.04);
+  --shadow-lg: 0 4px 20px rgba(26,23,18,0.08), 0 1px 6px rgba(26,23,18,0.05);
+
 }
 
 body {
-  background: var(--surface);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--paper);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
   height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  /* Subtle noise texture */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
 }
 
 /* ── FULL SCREEN APP SHELL ── */
 .phone {
   width: 100%;
   height: 100vh;
-  background: var(--white);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative;
+  background: var(--paper);
 }
-
-.phone-notch { display: none; }
-
-.notch-pill {
-  width: 90px; height: 26px;
-  background: #000;
-  border-radius: 20px;
-}
-
-/* ── STATUS BAR ── */
-.status-bar { display: none; }
-
-.status-time { color: var(--ink); }
-.status-icons { display: flex; gap: 5px; align-items: center; color: var(--ink); font-size: 10px; }
 
 /* ── SCREEN SYSTEM ── */
 .screen {
@@ -66,7 +69,7 @@ body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--surface);
+  background: var(--paper);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -87,20 +90,20 @@ body {
 
 /* ── TOPBAR ── */
 .topbar {
-  padding: 14px 20px 12px;
-  padding-top: max(14px, calc(10px + env(safe-area-inset-top)));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--white);
+  padding: 14px 16px 12px;
+  padding-top: max(14px, calc(10px + env(safe-area-inset-top)));
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
 
 .topbar-back {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--accent);
+  font-weight: 500;
+  color: var(--ink);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -109,15 +112,16 @@ body {
 }
 
 .topbar-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--ink);
+  letter-spacing: -0.1px;
 }
 
 .topbar-action {
   font-size: 13px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--ink);
   cursor: pointer;
 }
 
@@ -134,19 +138,19 @@ body {
   cursor: pointer;
   border: none;
   transition: all 0.15s;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   letter-spacing: -0.2px;
 }
 
 .btn:active { transform: scale(0.97); }
 
 .btn-primary {
-  background: var(--accent);
-  color: white;
+  background: var(--ink);
+  color: var(--paper);
   width: 100%;
 }
 
-.btn-primary:hover { background: #333333; }
+.btn-primary:hover { background: var(--ink2); }
 
 .btn-secondary {
   background: var(--line);
@@ -156,14 +160,14 @@ body {
 
 .btn-outline {
   background: transparent;
-  color: var(--accent);
-  border: 1.5px solid var(--accent);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
   width: 100%;
 }
 
 .btn-danger {
   background: #fef2f0;
-  color: var(--accent2);
+  color: var(--muted);
   border: 1.5px solid #f5c4b8;
   width: 100%;
 }
@@ -172,132 +176,161 @@ body {
    SCREEN 0 — HOME / JOBS AT A GLANCE
 ══════════════════════════════════ */
 .home-header {
-  background: #0a0a0a;
-  padding: 52px 20px 28px;
+  background: var(--ink);
+  padding: 52px 16px 16px;
   padding-top: max(52px, calc(44px + env(safe-area-inset-top)));
-  color: white;
+  color: var(--paper);
   flex-shrink: 0;
 }
 
 .home-greeting {
-  font-size: 13px;
-  opacity: 0.75;
-  font-weight: 500;
-  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.5;
+  margin-bottom: 2px;
 }
 
 .home-name {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  letter-spacing: -0.3px;
+  line-height: 1.15;
 }
 
-.home-stats {
+.home-tagline {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-top: 3px;
+}
+
+.earned-banner {
+  margin-top: 14px;
+  background: rgba(247,244,239,0.08);
+  border: 1px solid rgba(247,244,239,0.10);
+  border-radius: 10px;
+  padding: 11px 13px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.earned-val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  letter-spacing: -0.8px;
+  line-height: 1;
+  color: var(--paper);
+}
+
+.earned-label { text-align: right; }
+
+.earned-badge {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(201,168,76,0.14);
+  border: 1px solid rgba(201,168,76,0.24);
+  border-radius: 5px;
+  padding: 3px 7px;
+  margin-bottom: 3px;
+}
+
+.earned-sub { font-size: 9px; opacity: 0.4; }
+
+.mini-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 6px;
+  margin-top: 7px;
 }
 
-.stat-pill {
-  background: rgba(255,255,255,0.15);
-  border-radius: 12px;
-  padding: 11px 14px;
+.mini-stat {
+  background: rgba(247,244,239,0.07);
+  border: 1px solid rgba(247,244,239,0.08);
+  border-radius: 8px;
+  padding: 9px 11px;
   cursor: pointer;
-  transition: background 0.15s;
-  border: 1.5px solid transparent;
 }
 
-.stat-pill:hover  { background: rgba(255,255,255,0.25); }
-.stat-pill:active { background: rgba(255,255,255,0.3); transform: scale(0.97); }
+.mini-val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 17px;
+  color: var(--paper);
+  line-height: 1;
+  letter-spacing: -0.3px;
+}
 
-.stat-val { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-.stat-lbl { font-size: 11px; opacity: 0.75; font-weight: 500; margin-top: 1px; }
+.mini-lbl { font-size: 9px; color: rgba(247,244,239,0.42); margin-top: 3px; }
+.mini-sub { font-size: 9px; color: var(--gold); margin-top: 2px; }
 
 .home-section {
-  padding: 16px 20px 8px;
+  padding: 16px 16px 8px;
 }
 
 .section-label {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .job-row {
-  background: var(--white);
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-bottom: 8px;
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  gap: 10px;
+  box-shadow: var(--shadow);
   cursor: pointer;
-  transition: transform 0.15s;
 }
 
 .job-row:active { transform: scale(0.98); }
 
-.job-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
+.job-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-.dot-pending { background: var(--warning); }
-.dot-signed  { background: #0a0a0a; }
-.dot-sent    { background: #6366f1; }
+.dot-draft    { background: var(--s-draft); }
+.dot-sent     { background: var(--s-sent); }
+.dot-signed   { background: var(--s-signed); }
+.dot-service  { background: var(--s-service); }
+.dot-invoiced { background: var(--s-invoiced); }
+.dot-paid     { background: var(--s-paid); }
+/* backward compat aliases */
+.dot-pending        { background: var(--s-draft); }
+.dot-needs_serviced { background: var(--s-service); }
 
 .job-info { flex: 1; }
-.job-name  { font-size: 14px; font-weight: 700; color: var(--ink); }
-.job-sub   { font-size: 12px; color: var(--muted); margin-top: 1px; }
-.job-amt   { font-size: 15px; font-weight: 800; color: var(--ink); }
+.job-name { font-size: 12px; font-weight: 600; color: var(--ink); }
+.job-sub  { font-size: 9px; color: var(--muted); margin-top: 1px; }
+.job-amt  { font-size: 13px; font-weight: 700; color: var(--ink); }
 
 .draft-row {
-  background: var(--white);
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-bottom: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  gap: 10px;
   cursor: pointer;
-  transition: transform 0.15s;
-  border: 1.5px dashed var(--line);
 }
 
 .draft-row:active { transform: scale(0.98); }
-.draft-row:hover { border-color: var(--accent); }
 
-.draft-icon {
-  width: 34px; height: 34px;
-  border-radius: 10px;
-  background: #fff8f0;
-  border: 1.5px solid #f5c4a0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
+.draft-icon { font-size: 16px; flex-shrink: 0; }
 .draft-info { flex: 1; }
-.draft-name { font-size: 14px; font-weight: 700; color: var(--ink); }
-.draft-sub  { font-size: 12px; color: var(--muted); margin-top: 1px; }
-.draft-amt  { font-size: 15px; font-weight: 800; color: var(--accent2); }
-
-.draft-delete {
-  font-size: 16px;
-  color: var(--muted);
-  padding: 4px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
+.draft-name { font-size: 12px; font-weight: 600; color: var(--ink); }
+.draft-sub  { font-size: 9px; color: var(--muted); margin-top: 1px; }
+.draft-amt  { font-size: 13px; font-weight: 700; color: var(--ink); margin-left: auto; }
+.draft-delete { font-size: 13px; color: var(--muted); padding: 4px; flex-shrink: 0; }
 
 .filter-tab {
   padding: 7px 16px;
@@ -308,32 +341,30 @@ body {
   white-space: nowrap;
   border: 1.5px solid var(--line);
   color: var(--muted);
-  background: var(--white);
+  background: var(--surface);
   transition: all 0.15s;
   flex-shrink: 0;
 }
 
-.filter-tab:hover  { border-color: var(--accent); color: var(--accent); }
-.filter-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+.filter-tab:hover  { border-color: var(--ink); color: var(--ink); }
+.filter-tab.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .fab {
-  width: 100%;
-  padding: 16px 20px;
-  border-radius: 16px;
-  background: var(--accent);
-  color: white;
-  font-size: 15px;
-  font-weight: 800;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin: 0 14px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 11px;
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-  transition: all 0.15s;
-  letter-spacing: -0.2px;
+  gap: 6px;
   border: none;
-  outline: none;
+  cursor: pointer;
+  width: calc(100% - 28px);
 }
 
 .fab:active { transform: scale(0.97); }
@@ -356,19 +387,19 @@ body {
 
 .field-input {
   width: 100%;
-  background: var(--white);
+  background: var(--surface);
   border: 1.5px solid var(--line);
   border-radius: 12px;
   padding: 13px 14px;
   font-size: 15px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   color: var(--ink);
   font-weight: 500;
   outline: none;
   transition: border-color 0.15s;
 }
 
-.field-input:focus { border-color: var(--accent); }
+.field-input:focus { border-color: var(--ink); }
 
 .field-row {
   display: grid;
@@ -387,44 +418,43 @@ body {
 .services-list { padding: 12px 20px; flex: 1; }
 
 .service-item {
-  background: var(--white);
+  background: var(--surface);
   border: 1.5px solid var(--line);
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
-  transition: all 0.15s;
 }
 
 .service-item.selected {
-  border-color: var(--accent);
-  background: var(--accent-light);
+  border-color: var(--ink);
+  background: #FAFAF8;
 }
 
 .service-check {
-  width: 22px; height: 22px;
+  width: 18px; height: 18px;
   border-radius: 50%;
-  border: 2px solid var(--line);
+  border: 1.5px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 9px;
   flex-shrink: 0;
-  font-size: 12px;
-  transition: all 0.15s;
+  color: transparent;
 }
 
 .service-item.selected .service-check {
-  background: #0a0a0a;
-  border-color: #0a0a0a;
-  color: white;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
 }
 
 .service-info { flex: 1; }
-.service-name { font-size: 14px; font-weight: 700; color: var(--ink); }
-.service-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.service-name { font-size: 12px; font-weight: 600; color: var(--ink); }
+.service-desc { font-size: 9px; color: var(--muted); margin-top: 1px; }
 
 .service-qty {
   display: flex;
@@ -433,131 +463,132 @@ body {
 }
 
 .qty-btn {
-  width: 28px; height: 28px;
+  width: 18px; height: 18px;
   border-radius: 50%;
-  background: #0a0a0a;
-  color: white;
-  border: none;
-  font-size: 16px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13px;
   font-weight: 700;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
+  cursor: pointer;
   line-height: 1;
-  transition: transform 0.1s;
+  flex-shrink: 0;
 }
 
 .qty-btn:active { transform: scale(0.9); }
-.qty-num { font-size: 15px; font-weight: 800; color: var(--ink); min-width: 16px; text-align: center; }
+.qty-num { font-size: 12px; font-weight: 700; color: var(--ink); min-width: 12px; text-align: center; }
 .service-price { font-size: 14px; font-weight: 800; color: var(--ink); white-space: nowrap; }
 
 .quote-total-bar {
-  background: var(--white);
+  background: var(--surface);
   border-top: 1px solid var(--line);
-  padding: 14px 20px;
+  padding: 10px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
 }
 
-.total-label { font-size: 13px; font-weight: 600; color: var(--muted); }
-.total-amount { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; }
+.total-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.total-amount { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); letter-spacing: -0.5px; }
 
 /* ══════════════════════════════════
    SCREEN 3 — QUOTE PREVIEW
 ══════════════════════════════════ */
 .quote-doc {
-  margin: 16px 20px;
-  background: var(--white);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: var(--shadow);
-  animation: slideUp 0.35s cubic-bezier(0.4,0,0.2,1);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
+  margin: 12px 14px;
 }
 
 .quote-brand {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 18px;
-  border-bottom: 1.5px solid var(--line);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
 }
 
 .brand-logo {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: #0a0a0a;
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  background: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 18px;
-  font-weight: 900;
-  font-family: 'Lora', serif;
+  font-family: 'DM Serif Display', serif;
+  font-size: 14px;
+  color: var(--paper);
+  flex-shrink: 0;
 }
 
-.brand-name { font-size: 15px; font-weight: 800; color: var(--ink); }
-.brand-contact { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.brand-name    { font-size: 12px; font-weight: 700; color: var(--ink); margin-left: 8px; }
+.brand-contact { font-size: 8px; color: var(--muted); margin-top: 1px; margin-left: 8px; }
 
-.quote-badge {
-  font-size: 10px;
+.quote-badge, .qt-badge {
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #0a0a0a;
-  background: #f0f0f0;
-  border-radius: 6px;
-  padding: 4px 8px;
+  color: var(--ink);
+  background: var(--line);
+  border-radius: 4px;
+  padding: 2px 6px;
 }
 
 .quote-to {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
-.qt-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-.qt-name  { font-size: 16px; font-weight: 800; color: var(--ink); }
-.qt-addr  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.qt-meta-label { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.qt-label { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.qt-name  { font-size: 13px; font-weight: 700; color: var(--ink); }
+.qt-addr  { font-size: 9px; color: var(--muted); margin-top: 1px; }
+.qt-num   { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--s-draft); margin-top: 4px; }
 
-.line-items { margin: 16px 0; }
+.line-items { margin: 12px 0; }
 
-.line-item {
+.line-item, .qt-item {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 10px 0;
+  padding: 7px 0;
   border-bottom: 1px solid var(--line);
   gap: 12px;
 }
 
-.line-item:last-child { border-bottom: none; }
+.line-item:last-child, .qt-item:last-child { border-bottom: none; }
 
-.li-name  { font-size: 13px; font-weight: 700; color: var(--ink); }
-.li-desc  { font-size: 11px; color: var(--muted); margin-top: 1px; }
-.li-price { font-size: 14px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+.li-name,  .qt-item-name  { font-size: 11px; font-weight: 600; color: var(--ink); }
+.li-desc,  .qt-item-desc  { font-size: 8px; color: var(--muted); margin-top: 1px; }
+.li-price, .qt-item-price { font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap; }
 
-.quote-total-section {
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 14px 16px;
+.quote-total-section, .qt-total {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--ink);
 }
 
-.qt-total-lbl { font-size: 13px; font-weight: 700; color: var(--muted); }
-.qt-total-amt { font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.8px; }
+.qt-total-lbl, .qt-total-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.qt-total-amt, .qt-total-val   { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); letter-spacing: -0.5px; }
 
 .quote-note {
-  margin-top: 14px;
-  font-size: 11px;
+  margin-top: 10px;
+  font-size: 8px;
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.7;
   font-style: italic;
-  font-family: 'Lora', serif;
+  border-top: 1px solid var(--line);
+  padding-top: 9px;
 }
 
 /* ══════════════════════════════════
@@ -584,14 +615,14 @@ body {
 .sig-amount {
   font-size: 28px;
   font-weight: 800;
-  color: #0a0a0a;
+  color: var(--ink);
   letter-spacing: -1px;
   margin: 6px 0 4px;
 }
 
 .sig-pad-wrap {
   margin: 12px 20px;
-  background: var(--white);
+  background: var(--surface);
   border: 2px dashed var(--line);
   border-radius: 16px;
   overflow: hidden;
@@ -620,8 +651,39 @@ body {
 }
 
 .sig-pad-wrap.signed {
-  border-color: var(--accent);
+  border-color: var(--ink);
   border-style: solid;
+}
+
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 20px 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.consent-row:has(input:checked) { border-color: var(--ink); }
+
+.consent-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.consent-row span {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-weight: 500;
 }
 
 .sig-clear {
@@ -633,7 +695,7 @@ body {
   cursor: pointer;
 }
 
-.sig-clear:hover { color: var(--accent2); }
+.sig-clear:hover { color: var(--ink2); }
 
 .sig-legal {
   margin: 0 20px 8px;
@@ -641,7 +703,7 @@ body {
   color: var(--muted);
   line-height: 1.6;
   text-align: center;
-  font-family: 'Lora', serif;
+  font-family: 'DM Serif Display', serif;
   font-style: italic;
 }
 
@@ -661,8 +723,8 @@ body {
 .success-icon {
   width: 88px; height: 88px;
   border-radius: 50%;
-  background: #f0f0f0;
-  border: 3px solid #0a0a0a;
+  background: var(--line);
+  border: 3px solid var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -693,7 +755,7 @@ body {
 }
 
 .success-detail {
-  background: var(--white);
+  background: var(--surface);
   border-radius: 16px;
   padding: 16px 20px;
   width: 100%;
@@ -713,13 +775,13 @@ body {
 .sd-row:last-child { border-bottom: none; }
 .sd-label { color: var(--muted); font-weight: 500; }
 .sd-value { font-weight: 700; color: var(--ink); }
-.sd-value.green { color: #0a0a0a; }
+.sd-value.green { color: var(--s-paid); }
 
 /* ══════════════════════════════════
    DEMO LABEL (outside phone)
 ══════════════════════════════════ */
 .demo-label {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -734,7 +796,7 @@ body {
 .demo-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: #0a0a0a;
+  background: var(--ink);
   animation: blink 1.4s infinite;
 }
 
@@ -756,7 +818,164 @@ body {
   transition: background 0.3s;
 }
 
-.step-dot.active { background: #0a0a0a; width: 18px; border-radius: 3px; }
+.step-dot.active { background: var(--ink); width: 18px; border-radius: 3px; }
+
+/* ── PAYMENT SCREEN ── */
+.pay-row { display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--line); }
+.pay-row:last-child { border-bottom:none; }
+.pay-lbl  { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); width:80px; flex-shrink:0; }
+.pay-val  { font-family:'DM Mono',monospace; font-size:12px; color:var(--ink); flex:1; word-break:break-all; }
+.pay-copy { font-size:15px; color:var(--muted); cursor:pointer; flex-shrink:0; padding:2px 6px; line-height:1; }
+.pay-copy:active { color:var(--ink); }
+
+.pay-card { background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-bottom:8px; overflow:hidden; }
+.pay-card-head { display:flex; align-items:center; padding:14px; cursor:pointer; user-select:none; gap:0; }
+.pay-card-head:active { background:var(--paper); }
+.pay-card-chevron { font-size:20px; color:var(--muted); line-height:1; flex-shrink:0; margin-left:8px; transition:transform 0.2s ease; font-style:normal; }
+.pay-card-body { padding:0 14px 14px; border-top:1px solid var(--line); }
+
+.toggle { position:relative; display:inline-block; width:46px; height:28px; flex-shrink:0; }
+.toggle input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider { position:absolute; cursor:pointer; inset:0; background:var(--line); border-radius:28px; transition:0.25s; }
+.toggle-slider::before { content:''; position:absolute; height:22px; width:22px; left:3px; bottom:3px; background:var(--surface); border-radius:50%; transition:0.25s; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+.toggle input:checked + .toggle-slider { background:var(--ink); }
+.toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
+
+@keyframes tapPulse {
+  0%,100% { box-shadow:0 0 0 0 rgba(201,168,76,0.35); }
+  50%      { box-shadow:0 0 0 12px rgba(201,168,76,0); }
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 9999;
+  animation: toastIn 0.25s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(26,23,18,0.2);
+  pointer-events: none;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── STAT DRAWER ── */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,23,18,0.45);
+  z-index: 100;
+  display: none;
+}
+.drawer-overlay.open { display: block; }
+
+.drawer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  max-height: 75vh;
+  overflow-y: auto;
+  z-index: 101;
+  padding: 20px 16px 40px;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.drawer.open { transform: translateY(0); }
+
+.drawer-handle {
+  width: 36px; height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.drawer-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+.drawer-sub   { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+
+/* ── JOB ROW CHEVRON ── */
+.job-row-live { cursor: pointer; }
+.job-row-live::after {
+  content: '›';
+  font-size: 20px;
+  color: var(--muted);
+  font-weight: 300;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+/* ── PRINT STYLES ── */
+#printArea { display: none; }
+
+@media print {
+  body > .phone  { display: none !important; }
+  body > #printArea {
+    display: block !important;
+    font-family: 'DM Sans', sans-serif;
+    color: #0a0a0a;
+    padding: 32px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  #printArea .p-brand {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #0a0a0a;
+    margin-bottom: 24px;
+  }
+  #printArea .p-logo {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: #0a0a0a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 900;
+    flex-shrink: 0;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  #printArea .p-biz-name  { font-size: 16px; font-weight: 800; }
+  #printArea .p-biz-sub   { font-size: 12px; color: #666; margin-top: 2px; }
+  #printArea .p-badge     { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: #f0f0f0; padding: 5px 10px; border-radius: 6px; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  #printArea .p-to-label  { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+  #printArea .p-to-name   { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  #printArea .p-to-sub    { font-size: 12px; color: #666; }
+  #printArea .p-to        { margin-bottom: 28px; }
+  #printArea table        { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  #printArea thead th     { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #888; padding: 8px 0; border-bottom: 1px solid #e0e0e0; text-align: left; }
+  #printArea thead th:last-child { text-align: right; }
+  #printArea tbody td     { padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: top; }
+  #printArea tbody td:last-child { text-align: right; font-weight: 700; }
+  #printArea .p-total-row { display: flex; justify-content: space-between; align-items: center; background: #f5f5f5; padding: 14px 16px; border-radius: 10px; margin-top: 8px; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  #printArea .p-total-lbl { font-size: 13px; font-weight: 600; color: #666; }
+  #printArea .p-total-amt { font-size: 26px; font-weight: 800; }
+  #printArea .p-terms     { margin-top: 24px; font-size: 11px; color: #888; line-height: 1.6; font-style: italic; border-top: 1px solid #e0e0e0; padding-top: 16px; }
+  #printArea .p-signed    { margin-top: 20px; font-size: 11px; color: #0a0a0a; font-weight: 700; }
+  /* ── AUDIT PAGE ── */
+  #printArea .p-audit-page    { page-break-before: always; padding-top: 8px; }
+  #printArea .p-audit-title   { font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #888; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 20px; }
+  #printArea .p-audit-section { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin: 18px 0 8px; }
+  #printArea .p-audit-row     { display: flex; justify-content: space-between; align-items: flex-start; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #f5f5f5; gap: 16px; }
+  #printArea .p-audit-lbl     { color: #888; font-weight: 600; flex-shrink: 0; min-width: 140px; }
+  #printArea .p-audit-val     { color: #0a0a0a; font-weight: 500; text-align: right; word-break: break-all; }
+  #printArea .p-audit-hash    { font-family: 'Courier New', monospace; font-size: 10px; background: #f5f5f5; padding: 10px 12px; border-radius: 8px; word-break: break-all; margin-top: 8px; color: #333; line-height: 1.6; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  #printArea .p-audit-ua      { font-size: 10px; color: #aaa; line-height: 1.5; word-break: break-all; margin-top: 6px; }
+}
 </style>
 </head>
 <body>
@@ -770,38 +989,51 @@ body {
         <div>
           <div class="home-greeting">Good morning,</div>
           <div class="home-name" id="homeBizName">SignedOn Demo Co.</div>
+          <div class="home-tagline" id="homeTagline">Field Service App</div>
         </div>
-        <div onclick="go(7)" style="background:rgba(255,255,255,0.15);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0;margin-top:4px" title="Settings">⚙️</div>
+        <div onclick="go(7)" style="background:rgba(247,244,239,0.12);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0;margin-top:4px" title="Settings">⚙️</div>
       </div>
+      <div class="earned-banner" onclick="openDrawer('earned')">
+        <div class="earned-val" id="statEarned">$0</div>
+        <div class="earned-label">
+          <div class="earned-badge">THIS MONTH</div>
+          <div class="earned-sub">Earned</div>
+        </div>
       </div>
-      <div class="home-stats">
-        <div class="stat-pill" onclick="openDrawer('awaiting')">
-          <div class="stat-val" id="statAwaiting">3</div>
-          <div class="stat-lbl">Awaiting Signature</div>
+      <div class="mini-stats">
+        <div class="mini-stat" onclick="openDrawer('openquotes')">
+          <div class="mini-val" id="statOpenQuotes">$0</div>
+          <div class="mini-lbl">Open Quotes</div>
+          <div class="mini-sub" id="statOpenQuotesCount">0 unsent</div>
         </div>
-        <div class="stat-pill" onclick="openDrawer('earned')">
-          <div class="stat-val">$4,820</div>
-          <div class="stat-lbl">Earned This Month</div>
+        <div class="mini-stat" onclick="openDrawer('awaiting')">
+          <div class="mini-val" id="statAwaiting">$0</div>
+          <div class="mini-lbl">Awaiting Sig.</div>
+          <div class="mini-sub" id="statAwaitingCount">0 awaiting</div>
         </div>
-        <div class="stat-pill" onclick="openDrawer('unpaid')">
-          <div class="stat-val" id="statUnpaid">2</div>
-          <div class="stat-lbl">Unpaid Invoices</div>
+        <div class="mini-stat" onclick="openDrawer('needs_serviced')">
+          <div class="mini-val" id="statNeedsServiced">$0</div>
+          <div class="mini-lbl">Needs Serviced</div>
+          <div class="mini-sub" id="statNeedsServicedCount">0 jobs</div>
         </div>
-        <div class="stat-pill" onclick="openDrawer('jobs')">
-          <div class="stat-val">8</div>
-          <div class="stat-lbl">Jobs This Month</div>
+        <div class="mini-stat" onclick="openDrawer('unpaid')">
+          <div class="mini-val" id="statUnpaid">$0</div>
+          <div class="mini-lbl">Unpaid Invoices</div>
+          <div class="mini-sub" id="statUnpaidCount">0 outstanding</div>
         </div>
       </div>
     </div>
 
     <!-- STAT DRAWER -->
-    <div id="statDrawer" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end">
-      <div id="statDrawerInner" style="background:var(--white);border-radius:24px 24px 0 0;width:100%;max-height:75%;overflow-y:auto;animation:slideUp 0.28s cubic-bezier(0.4,0,0.2,1)">
-        <div style="padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px">
-          <div id="drawerTitle" style="font-size:16px;font-weight:800;color:var(--ink)"></div>
-          <div onclick="closeDrawer()" style="font-size:20px;color:var(--muted);cursor:pointer;padding:4px 8px;line-height:1">✕</div>
+    <div class="drawer-overlay" id="statDrawer" onclick="closeDrawer()">
+      <div class="drawer" id="statDrawerInner" onclick="event.stopPropagation()">
+        <div class="drawer-handle"></div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2px">
+          <div id="drawerTitle" class="drawer-title"></div>
+          <div onclick="closeDrawer()" style="font-size:14px;color:var(--muted);cursor:pointer;padding:4px 0 4px 12px;line-height:1">✕</div>
         </div>
-        <div id="drawerBody" style="padding:14px 20px 32px"></div>
+        <div id="drawerSub" class="drawer-sub"></div>
+        <div id="drawerBody"></div>
       </div>
     </div>
 
@@ -809,7 +1041,7 @@ body {
     <div class="home-section" id="draftsSection" style="display:none">
       <div class="section-label" style="display:flex;align-items:center;justify-content:space-between">
         <span>Drafts</span>
-        <span id="draftsBadge" style="background:var(--accent2);color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:0.05em"></span>
+        <span id="draftsBadge" style="background:var(--muted);color:var(--surface);font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:0.05em"></span>
       </div>
       <div id="draftsList"></div>
     </div>
@@ -817,43 +1049,15 @@ body {
 
     <div class="home-section">
       <div class="section-label">Recent Activity</div>
-      <div id="recentList">
-        <div class="job-row">
-          <div class="job-dot dot-pending"></div>
-          <div class="job-info">
-            <div class="job-name">Sarah Johnson</div>
-            <div class="job-sub">Lawn care + hedging · Awaiting signature</div>
-          </div>
-          <div class="job-amt">$340</div>
-        </div>
-        <div class="job-row">
-          <div class="job-dot dot-signed"></div>
-          <div class="job-info">
-            <div class="job-name">Tom & Lisa Park</div>
-            <div class="job-sub">Full garden redesign · Signed ✓</div>
-          </div>
-          <div class="job-amt">$1,200</div>
-        </div>
-        <div class="job-row">
-          <div class="job-dot dot-sent"></div>
-          <div class="job-info">
-            <div class="job-name">Robert Nguyen</div>
-            <div class="job-sub">Invoice sent · Payment pending</div>
-          </div>
-          <div class="job-amt">$580</div>
-        </div>
-      </div>
+      <div id="recentList"></div>
     </div>
 
-    <div style="padding: 4px 20px 0; flex-shrink:0;">
+    <div style="padding: 12px 14px 14px; flex-shrink:0; display:flex; flex-direction:column; gap:8px;">
       <button class="btn btn-outline" onclick="go(6)" style="font-size:13px;padding:11px 20px;">
         📋 View All Jobs
       </button>
-    </div>
-
-    <div style="padding: 10px 20px 28px; flex-shrink:0;">
-      <button class="fab" onclick="activeDraftId = null; go(1)">
-        <span style="font-size:22px;line-height:1">+</span> New Quote
+      <button class="fab" style="margin:0;width:100%" onclick="activeDraftId = null; go(1)">
+        + New Quote
       </button>
     </div>
   </div>
@@ -869,33 +1073,34 @@ body {
       <div class="section-label" style="margin-bottom:14px">Customer Details</div>
       <div class="field-group">
         <div class="field-label">Full Name</div>
-        <input class="field-input" type="text" value="David & Karen Cole" id="custName">
+        <input class="field-input" type="text" placeholder="Customer name" id="custName">
       </div>
       <div class="field-group">
         <div class="field-label">Address</div>
-        <input class="field-input" type="text" value="142 Birchwood Drive">
+        <input class="field-input" type="text" placeholder="Street address" id="custAddr">
       </div>
       <div class="field-row">
         <div class="field-group">
           <div class="field-label">City</div>
-          <input class="field-input" type="text" value="York">
+          <input class="field-input" type="text" placeholder="City" id="custCity">
         </div>
         <div class="field-group">
           <div class="field-label">Zip</div>
-          <input class="field-input" type="text" value="17401">
+          <input class="field-input" type="text" placeholder="Zip" id="custZip">
         </div>
       </div>
       <div class="field-group">
-        <div class="field-label">Phone</div>
-        <input class="field-input" type="tel" value="(717) 555-0192">
+        <div class="field-label">Email</div>
+        <input class="field-input" type="email" placeholder="customer@email.com" id="custEmail">
+        <div style="font-size:11px;color:var(--muted);margin-top:5px">Invoice will be sent here</div>
       </div>
       <div class="field-group">
-        <div class="field-label">Email</div>
-        <input class="field-input" type="email" value="dcole@email.com">
+        <div class="field-label">Phone</div>
+        <input class="field-input" type="tel" placeholder="(555) 000-0000" id="custPhone">
       </div>
       <div class="field-group">
         <div class="field-label">Job Notes (optional)</div>
-        <input class="field-input" type="text" placeholder="e.g. Front yard only, dog gate on left">
+        <input class="field-input" type="text" placeholder="e.g. Front yard only, dog gate on left" id="custNotes">
       </div>
     </div>
     <div class="btn-area">
@@ -948,7 +1153,7 @@ body {
         <div class="qt-label">Prepared For</div>
         <div class="qt-name" id="previewName">David & Karen Cole</div>
         <div class="qt-addr">142 Birchwood Drive, York, PA 17401</div>
-        <div class="qt-addr" style="margin-top:4px;font-size:11px;color:var(--muted)">Quote #1042 · <span id="quoteDate"></span></div>
+        <div class="qt-addr" style="margin-top:4px;font-size:11px;color:var(--muted)">Quote <span id="quoteNum">#1001</span> · <span id="quoteDate"></span></div>
       </div>
 
       <div class="line-items" id="previewLines"></div>
@@ -977,7 +1182,7 @@ body {
 
     <!-- Email Modal -->
     <div id="emailModal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end;justify-content:center">
-      <div style="background:var(--white);border-radius:24px 24px 0 0;padding:28px 24px 36px;width:100%;animation:slideUp 0.25s cubic-bezier(0.4,0,0.2,1)">
+      <div style="background:var(--surface);border-radius:24px 24px 0 0;padding:28px 24px 36px;width:100%;animation:slideUp 0.25s cubic-bezier(0.4,0,0.2,1)">
         <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:4px">Send Quote by Email</div>
         <div style="font-size:13px;color:var(--muted);margin-bottom:18px">A PDF copy will be attached automatically.</div>
         <div class="field-label" style="margin-bottom:6px">Email Address</div>
@@ -990,7 +1195,7 @@ body {
     </div>
 
     <!-- Saved Toast -->
-    <div id="savedToast" style="display:none;position:absolute;bottom:32px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:12px 20px;border-radius:40px;font-size:13px;font-weight:700;white-space:nowrap;z-index:200;animation:slideUp 0.25s ease">
+    <div id="savedToast" class="toast" style="display:none">
       🗂️ Saved to drafts
     </div>
 
@@ -1007,6 +1212,7 @@ body {
     <div class="sig-intro">
       <p>Hand your phone to the customer.</p>
       <div class="sig-amount" id="sigAmount">$290</div>
+      <p style="font-size:13px;color:var(--muted);margin-top:2px">Quote <span id="sigQuoteNum">#1001</span></p>
       <p>Sign below to accept this quote.</p>
     </div>
 
@@ -1017,12 +1223,13 @@ body {
 
     <div class="sig-clear" onclick="clearSig()">Clear signature</div>
 
-    <div class="sig-legal">
-      By signing, the customer agrees to the quoted services and pricing. A copy will be sent to their email automatically.
-    </div>
+    <label class="consent-row" for="consentCheck">
+      <input type="checkbox" id="consentCheck" onchange="onConsentChange()">
+      <span>🔒 By signing, I agree to the terms of this quote and consent to conducting this transaction electronically.</span>
+    </label>
 
     <div class="btn-area">
-      <button class="btn btn-primary" id="acceptBtn" onclick="go(5)" style="opacity:0.4;pointer-events:none">
+      <button class="btn btn-primary" id="acceptBtn" onclick="handleAccept()" style="opacity:0.4;pointer-events:none">
         ✓ Accept & Generate Invoice
       </button>
     </div>
@@ -1038,7 +1245,7 @@ body {
       <div class="success-detail">
         <div class="sd-row">
           <span class="sd-label">Customer</span>
-          <span class="sd-value">David & Karen Cole</span>
+          <span class="sd-value" id="finalCustomer">David &amp; Karen Cole</span>
         </div>
         <div class="sd-row">
           <span class="sd-label">Total</span>
@@ -1046,42 +1253,71 @@ body {
         </div>
         <div class="sd-row">
           <span class="sd-label">Status</span>
-          <span class="sd-value green">✓ Signed & Invoiced</span>
+          <span class="sd-value green">✓ Signed &amp; Invoiced</span>
         </div>
         <div class="sd-row">
           <span class="sd-label">Sent to</span>
-          <span class="sd-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0165626e6d6441646c60686d2f626e6c">[email&#160;protected]</a></span>
+          <span class="sd-value" id="finalEmail">customer@email.com</span>
         </div>
         <div class="sd-row">
-          <span class="sd-label">PDF</span>
-          <span class="sd-value green">✓ Attached</span>
+          <span class="sd-label">Invoice #</span>
+          <span class="sd-value" id="finalQuoteNum">#1001</span>
+        </div>
+        <div class="sd-row">
+          <span class="sd-label">Signed</span>
+          <span class="sd-value" id="finalSignedAt" style="font-size:11px;text-align:right;line-height:1.4">—</span>
+        </div>
+        <div class="sd-row">
+          <span class="sd-label">Doc ID</span>
+          <span class="sd-value" id="finalDocId" style="font-family:monospace;font-size:11px;letter-spacing:0.04em;color:var(--muted)">—</span>
         </div>
       </div>
 
-      <button class="btn btn-primary" onclick="go(0)" style="width:100%;margin-bottom:10px">← Back to Home</button>
-      <button class="btn btn-outline" onclick="go(0)" style="width:100%">Send Payment Link</button>
+      <!-- Send Invoice button (hidden once invoice is sent) -->
+      <button class="btn btn-primary" id="successSendInvoiceBtn" style="width:100%;margin-bottom:10px">Send Invoice</button>
+
+      <!-- Invoice Ready card (shown after Send Invoice) -->
+      <div id="invoiceReadyCard" style="display:none;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:14px;padding:14px 16px;width:100%;margin-bottom:10px;text-align:left">
+        <div style="font-size:14px;font-weight:800;color:#15803d;margin-bottom:8px">✓ Invoice Ready</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div id="invoiceLinkText" style="font-size:11px;color:var(--muted);font-family:monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+          <span onclick="shareCurrentInvoiceLink()" style="font-size:18px;cursor:pointer;flex-shrink:0">⬆</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" onclick="copyCurrentInvoiceLink()" style="flex:1;padding:9px 12px;font-size:12px">Copy Link</button>
+          <button class="btn btn-outline" onclick="previewCurrentInvoice()" style="flex:1;padding:9px 12px;font-size:12px">Preview →</button>
+        </div>
+      </div>
+      <!-- mailto link (shown if customer email present) -->
+      <div id="invoiceMailtoRow" style="display:none;font-size:12px;color:var(--muted);margin-bottom:10px;cursor:pointer;text-align:center"></div>
+
+      <button class="btn btn-outline" id="successMarkPaidBtn" style="width:100%;margin-bottom:4px">Mark as Paid</button>
+      <div onclick="go(0)" style="text-align:center;padding:14px 8px 4px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer">← Back to Home</div>
     </div>
+  </div>
   <!-- ══ SCREEN 6: ALL JOBS ══ -->
   <div class="screen" id="s6">
     <div class="topbar">
-      <div class="topbar-back" onclick="go(0)">← Home</div>
+      <div style="width:44px"></div>
       <div class="topbar-title">All Jobs</div>
-      <div class="topbar-action"></div>
+      <div class="topbar-action" onclick="go(0)" style="font-size:20px;line-height:1;padding:4px 8px;color:var(--muted)">✕</div>
     </div>
 
     <!-- FILTER TABS -->
-    <div style="padding:12px 16px 0;background:var(--white);border-bottom:1px solid var(--line);flex-shrink:0;">
+    <div style="padding:12px 16px 0;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;">
       <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none">
         <div class="filter-tab active" onclick="filterJobs('all', this)">All</div>
-        <div class="filter-tab" onclick="filterJobs('action', this)">Needs Action</div>
-        <div class="filter-tab" onclick="filterJobs('signed', this)">Signed</div>
+        <div class="filter-tab" onclick="filterJobs('open', this)">Open</div>
+        <div class="filter-tab" onclick="filterJobs('awaiting', this)">Awaiting Sig.</div>
+        <div class="filter-tab" onclick="filterJobs('needs_serviced', this)">Needs Serviced</div>
+        <div class="filter-tab" onclick="filterJobs('invoiced', this)">Invoiced</div>
         <div class="filter-tab" onclick="filterJobs('paid', this)">Paid</div>
       </div>
     </div>
 
     <!-- SEARCH -->
     <div style="padding:12px 16px 8px;background:var(--surface);flex-shrink:0;">
-      <input class="field-input" type="text" placeholder="🔍  Search by name or service..." oninput="searchJobs(this.value)" style="font-size:13px;padding:10px 14px;background:var(--white)">
+      <input class="field-input" type="text" placeholder="🔍  Search by name or service..." oninput="searchJobs(this.value)" style="font-size:13px;padding:10px 14px;background:var(--surface)">
     </div>
 
     <!-- JOB LIST -->
@@ -1093,14 +1329,64 @@ body {
     <div class="topbar">
       <div class="topbar-back" onclick="go(0)">← Home</div>
       <div class="topbar-title">Settings</div>
-      <div class="topbar-action" id="settingsSaveBtn" onclick="saveSettings()" style="color:var(--accent);font-weight:800">Save</div>
+      <div class="topbar-action" id="settingsSaveBtn" onclick="saveSettings()" style="color:var(--ink);font-weight:800">Save</div>
     </div>
 
     <div style="flex:1;overflow-y:auto;padding:16px 20px 40px">
 
+      <!-- REINSTALL BANNER -->
+      <div id="reinstallBanner" style="display:none;background:#fef9c3;border:1px solid #fde047;border-radius:12px;padding:12px 14px;margin-bottom:16px;position:relative">
+        <div style="font-size:12px;color:#713f12;line-height:1.6;padding-right:22px">
+          ⚠️ <strong>Reinstall the app</strong> for name and icon changes to appear on your home screen.<br>
+          Delete the current app icon, then visit this page in Safari and tap Add to Home Screen again.
+        </div>
+        <div onclick="document.getElementById('reinstallBanner').style.display='none'" style="position:absolute;top:10px;right:12px;font-size:15px;color:#713f12;cursor:pointer;font-weight:700;line-height:1">✕</div>
+      </div>
+
+      <!-- APP IDENTITY -->
+      <div class="section-label" style="margin-bottom:4px">App Identity</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Controls the name and icon when installed on a phone</div>
+      <div style="background:var(--surface);border-radius:16px;padding:16px;margin-bottom:20px;border:1px solid var(--line)">
+
+        <!-- App Name -->
+        <div class="field-group">
+          <div class="field-label">App Name</div>
+          <input class="field-input" id="setAppName" type="text" placeholder="e.g. SignedOn, Mike's Quotes, ProBid" oninput="updateIconPreview()">
+          <div style="font-size:11px;color:var(--muted);margin-top:5px">This appears under the icon on your home screen</div>
+        </div>
+
+        <!-- Icon options -->
+        <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:16px">
+          <!-- Color picker -->
+          <div style="flex:1">
+            <div class="field-label">Icon Color</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+              <div id="iconColorSwatch" onclick="document.getElementById('setIconColor').click()" style="width:38px;height:38px;border-radius:10px;background:#0a0a0a;cursor:pointer;border:2px solid var(--line);flex-shrink:0"></div>
+              <input type="color" id="setIconColor" value="#0a0a0a" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none"
+                oninput="document.getElementById('iconColorSwatch').style.background=this.value; document.getElementById('iconColorHex').textContent=this.value; updateIconPreview()">
+              <span style="font-size:12px;color:var(--muted);font-family:monospace" id="iconColorHex">#0a0a0a</span>
+            </div>
+          </div>
+          <!-- Image upload -->
+          <div style="flex:1">
+            <div class="field-label">Custom Icon</div>
+            <input type="file" id="setIconImage" accept="image/png,image/jpeg,image/svg+xml" style="display:none" onchange="handleIconUpload(this)">
+            <button onclick="document.getElementById('setIconImage').click()" style="margin-top:6px;background:var(--line);border:none;border-radius:10px;padding:9px 14px;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer">📷 Upload Image</button>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">PNG, JPG, SVG · 512×512px</div>
+          </div>
+        </div>
+
+        <!-- Live preview -->
+        <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;align-items:center;gap:6px">
+          <img id="iconPreviewImg" style="width:72px;height:72px;border-radius:16px;display:block;object-fit:cover" src="" alt="Icon Preview">
+          <div style="font-size:11px;color:var(--muted)">Preview</div>
+          <div id="iconClearBtn" onclick="clearIconImage()" style="display:none;font-size:11px;font-weight:700;color:#e05c4b;cursor:pointer">✕ Remove custom image</div>
+        </div>
+      </div>
+
       <!-- BUSINESS INFO -->
       <div class="section-label" style="margin-bottom:12px">Business Info</div>
-      <div style="background:var(--white);border-radius:16px;padding:16px;margin-bottom:20px;border:1px solid var(--line)">
+      <div style="background:var(--surface);border-radius:16px;padding:16px;margin-bottom:20px;border:1px solid var(--line)">
         <div class="field-group">
           <div class="field-label">Business Name</div>
           <input class="field-input" id="setBizName" type="text" placeholder="Your business name">
@@ -1118,22 +1404,97 @@ body {
       <!-- SERVICES -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <div class="section-label" style="margin-bottom:0">Services & Pricing</div>
-        <div onclick="addServiceRow()" style="font-size:12px;font-weight:700;color:var(--accent);cursor:pointer">+ Add Service</div>
+        <div onclick="addServiceRow()" style="font-size:12px;font-weight:700;color:var(--ink);cursor:pointer">+ Add Service</div>
       </div>
       <div id="settingsServicesList" style="margin-bottom:20px"></div>
 
       <!-- QUOTE TERMS -->
       <div class="section-label" style="margin-bottom:12px">Quote Terms</div>
-      <div style="background:var(--white);border-radius:16px;padding:16px;margin-bottom:20px;border:1px solid var(--line)">
+      <div style="background:var(--surface);border-radius:16px;padding:16px;margin-bottom:20px;border:1px solid var(--line)">
         <div class="field-label" style="margin-bottom:6px">Footer text on every quote</div>
-        <textarea id="setTerms" class="field-input" rows="3" style="resize:none;line-height:1.5;font-family:'Plus Jakarta Sans',sans-serif"></textarea>
+        <textarea id="setTerms" class="field-input" rows="3" style="resize:none;line-height:1.5;font-family:'DM Sans',sans-serif"></textarea>
       </div>
 
       <!-- SUCCESS MESSAGE -->
       <div class="section-label" style="margin-bottom:12px">Success Screen Message</div>
-      <div style="background:var(--white);border-radius:16px;padding:16px;margin-bottom:24px;border:1px solid var(--line)">
+      <div style="background:var(--surface);border-radius:16px;padding:16px;margin-bottom:24px;border:1px solid var(--line)">
         <div class="field-label" style="margin-bottom:6px">Shown after customer signs</div>
-        <textarea id="setSuccessMsg" class="field-input" rows="2" style="resize:none;line-height:1.5;font-family:'Plus Jakarta Sans',sans-serif"></textarea>
+        <textarea id="setSuccessMsg" class="field-input" rows="2" style="resize:none;line-height:1.5;font-family:'DM Sans',sans-serif"></textarea>
+      </div>
+
+      <!-- PAYMENT METHODS -->
+      <div class="section-label" style="margin-bottom:4px">Payment Methods</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Only configured methods appear on the Collect Payment screen</div>
+      <div style="background:var(--surface);border-radius:16px;padding:16px;margin-bottom:24px;border:1px solid var(--line)">
+
+        <!-- Tap to Pay toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 16px;border-bottom:1px solid var(--line);margin-bottom:16px">
+          <div>
+            <div class="field-label" style="margin-bottom:2px">Tap to Pay</div>
+            <div style="font-size:11px;color:var(--muted)">Collect card payments via browser on supported devices</div>
+          </div>
+          <label class="toggle" style="margin-left:12px">
+            <input type="checkbox" id="setTapToPayEnabled">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- Stripe -->
+        <div class="field-group">
+          <div class="field-label">Stripe Payment Link</div>
+          <input class="field-input" id="setStripeLink" type="url" placeholder="https://buy.stripe.com/…">
+          <div style="font-size:11px;color:var(--muted);margin-top:5px">Paste a Stripe Payment Link — customer opens it to pay by card online</div>
+        </div>
+
+        <!-- Venmo -->
+        <div class="field-group">
+          <div class="field-label">Venmo Handle</div>
+          <input class="field-input" id="setPaymentVenmo" type="text" placeholder="@yourbusiness">
+          <div style="font-size:11px;color:var(--muted);margin-top:5px">The @ will be added automatically if omitted</div>
+        </div>
+
+        <!-- Cash App -->
+        <div class="field-group">
+          <div class="field-label">Cash App $Cashtag</div>
+          <input class="field-input" id="setPaymentCashApp" type="text" placeholder="$yourbusiness">
+          <div style="font-size:11px;color:var(--muted);margin-top:5px">The $ will be added automatically if omitted</div>
+        </div>
+
+        <!-- Zelle -->
+        <div class="field-group">
+          <div class="field-label">Zelle Email or Phone</div>
+          <input class="field-input" id="setPaymentZelle" type="text" placeholder="hello@you.com or (555) 000-0000">
+          <div style="font-size:11px;color:var(--muted);margin-top:5px">The email or phone number registered with your Zelle account</div>
+        </div>
+
+        <!-- ACH divider -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding-top:14px;border-top:1px solid var(--line);margin-bottom:12px">ACH / Bank Transfer</div>
+
+        <div class="field-group">
+          <div class="field-label">Bank Name</div>
+          <input class="field-input" id="setAchBankName" type="text" placeholder="e.g. Chase Bank">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Account Name</div>
+          <input class="field-input" id="setAchAccountName" type="text" placeholder="Name on account">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Routing Number</div>
+          <input class="field-input" id="setAchRouting" type="text" placeholder="021000021">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Account Number</div>
+          <div style="position:relative">
+            <input class="field-input" id="setAchAccount" type="password" placeholder="Account number" style="padding-right:44px">
+            <span onclick="var el=document.getElementById('setAchAccount');el.type=el.type==='password'?'text':'password'" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;cursor:pointer;color:var(--muted)">👁</span>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="field-group" style="margin-bottom:0">
+          <div class="field-label">Payment Notes</div>
+          <textarea class="field-input" id="setPaymentNotes" rows="2" placeholder="e.g. Checks payable to Mike's Landscaping" style="resize:none;line-height:1.5;font-family:'DM Sans',sans-serif"></textarea>
+        </div>
       </div>
 
       <!-- RESET -->
@@ -1142,13 +1503,78 @@ body {
     </div>
   </div>
 
+  <!-- ══ SCREEN 8: JOB DETAIL ══ -->
+  <div class="screen" id="s8">
+    <div class="topbar">
+      <div class="topbar-back" id="jobDetailBack" onclick="go(0)">← Back</div>
+      <div class="topbar-title" id="jobDetailTitle">Invoice</div>
+      <div class="topbar-action" onclick="printInvoice()" style="color:var(--ink)">PDF</div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding-bottom:16px">
+      <div class="quote-doc" id="jobDetailDoc" style="animation:none"></div>
+    </div>
+
+    <div class="btn-area" style="padding-top:8px">
+      <button class="btn btn-primary" onclick="printInvoice()" style="margin-bottom:10px">
+        <span>🖨️</span> Print / Save as PDF
+      </button>
+      <button class="btn btn-secondary" id="jobDetailBackBtn" onclick="go(0)" style="margin-bottom:10px">← Back</button>
+      <button class="btn btn-secondary" id="jobStatusActionBtn" style="margin-bottom:10px;display:none"></button>
+      <button class="btn btn-danger" id="deleteJobBtn" onclick="deleteJob()">Delete Job</button>
+    </div>
+  </div>
+
+
+  <!-- ══ SCREEN 9: INVOICE ══ -->
+  <div class="screen" id="s9">
+    <div class="topbar">
+      <div class="topbar-back" id="invoiceBack">← Back</div>
+      <div class="topbar-title" id="invoiceTitle">Invoice</div>
+      <div class="topbar-action" id="invoiceShareBtn" style="color:var(--ink)">⬆ Share</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding-bottom:24px">
+      <div class="quote-doc" id="invoiceDoc" style="animation:none"></div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 10: COLLECT PAYMENT ══ -->
+  <div class="screen" id="s10">
+    <div class="topbar">
+      <div class="topbar-back" id="paymentBack">← Back</div>
+      <div class="topbar-title">Collect Payment</div>
+      <div class="topbar-action"></div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding-bottom:24px">
+      <!-- Hero band -->
+      <div id="paymentHero" style="background:var(--ink);padding:22px 16px 20px"></div>
+      <!-- Method cards -->
+      <div id="paymentMethods" style="padding:14px 14px 0"></div>
+      <!-- Payment notes -->
+      <div id="paymentNotes" style="padding:0 14px"></div>
+    </div>
+
+    <!-- Bottom CTAs -->
+    <div class="btn-area" style="padding-top:10px;border-top:1px solid var(--line)">
+      <button class="btn btn-primary" id="paymentMarkPaidBtn" style="background:#3A8C5C;margin-bottom:8px">✓ Mark as Paid</button>
+      <div id="paymentReminderBtn" style="text-align:center;padding:8px 8px 2px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer">Send Payment Reminder ↗</div>
+    </div>
+  </div>
+
 </div>
+
+<!-- PRINT AREA: only visible during window.print() -->
+<div id="printArea"></div>
 
 <script>
 // ── CONFIG STORE (persists to localStorage) ──
 const CONFIG_KEY = 'signedon_config';
 
 const defaultConfig = {
+  appName:   'SignedOn',
+  iconColor: '#0a0a0a',
+  iconImage: null,
   business: {
     name:    'SignedOn Demo Co.',
     email:   'hello@yourbusiness.com',
@@ -1163,6 +1589,13 @@ const defaultConfig = {
   ],
   terms:   'This quote is valid for 30 days. Payment due upon acceptance.',
   successMsg: "You're in! We'll be in touch within 24 hours to get you set up.",
+  payment: {
+    tapToPayEnabled: false,
+    stripeLink: '',
+    venmo: '', cashApp: '', zelle: '',
+    achBankName: '', achAccountName: '', achRouting: '', achAccount: '',
+    notes: '',
+  },
 };
 
 function loadConfig() {
@@ -1172,10 +1605,14 @@ function loadConfig() {
     const parsed = JSON.parse(saved);
     // Deep merge so new default fields are always present
     return {
+      appName:   parsed.appName   !== undefined ? parsed.appName   : defaultConfig.appName,
+      iconColor: parsed.iconColor !== undefined ? parsed.iconColor : defaultConfig.iconColor,
+      iconImage: parsed.iconImage !== undefined ? parsed.iconImage : defaultConfig.iconImage,
       business: { ...defaultConfig.business, ...parsed.business },
       services: parsed.services || JSON.parse(JSON.stringify(defaultConfig.services)),
       terms:      parsed.terms      !== undefined ? parsed.terms      : defaultConfig.terms,
       successMsg: parsed.successMsg !== undefined ? parsed.successMsg : defaultConfig.successMsg,
+      payment: { ...defaultConfig.payment, ...(parsed.payment || {}) },
     };
   } catch { return JSON.parse(JSON.stringify(defaultConfig)); }
 }
@@ -1187,6 +1624,67 @@ function saveConfig(cfg) {
 let config   = loadConfig();
 let services = config.services.map(s => ({ ...s, qty: s.qty || 1 }));
 
+// ── SIGNED JOBS STORE ──
+const JOBS_KEY      = 'signedon_jobs';
+const COUNTER_KEY   = 'signedon_quote_counter';
+const AUDIT_LOG_KEY = 'signedon_audit_log';
+
+let signedJobs      = (() => { try { return JSON.parse(localStorage.getItem(JOBS_KEY) || '[]'); } catch { return []; } })();
+let quoteCounter    = parseInt(localStorage.getItem(COUNTER_KEY) || '1000', 10);
+let currentQuoteNum  = 0;  // assigned when a new quote session starts, reset on return to home
+let currentCreatedAt = 0;  // unix ms — when "New Quote" was tapped
+let currentSignedAt  = 0;  // unix ms — when "Accept & Generate Invoice" was tapped
+let currentDocHash   = ''; // SHA-256 hex fingerprint of the quote at signing
+
+function saveJobs() { localStorage.setItem(JOBS_KEY, JSON.stringify(signedJobs)); }
+
+function getAuditRecord(quoteNumber) {
+  try {
+    return JSON.parse(localStorage.getItem(`signedon_audit_${quoteNumber}`) || 'null');
+  } catch {
+    return null;
+  }
+}
+
+// Format a unix-ms timestamp as "February 23, 2026 at 3:47 PM EST"
+function fmtTimestamp(ms) {
+  const d = new Date(ms);
+  const date = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' });
+  return `${date} at ${time}`;
+}
+
+// SHA-256 via Web Crypto — returns lowercase hex string
+async function hashDoc(str) {
+  const encoded = new TextEncoder().encode(str);
+  const hashBuf = await window.crypto.subtle.digest('SHA-256', encoded);
+  return Array.from(new Uint8Array(hashBuf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+// Async accept handler — hashes the doc before navigating to the success screen
+async function handleAccept() {
+  // 1. Timestamp — captured here, before any async work, so it reflects the exact tap moment
+  currentSignedAt = Date.now();
+
+  // 2. Gather the fields that define the document being signed
+  const name     = document.getElementById('custName').value || 'Customer';
+  const selected = services.filter(s => s.selected);
+  const t        = total();
+  const hashInput = [
+    config.business.name,
+    name,
+    JSON.stringify(selected.map(s => ({ name: s.name, desc: s.desc, rate: s.rate, qty: s.qty }))),
+    String(t),
+    config.terms,
+    String(currentSignedAt),
+  ].join('|');
+
+  // 3. Compute hash, then navigate
+  currentDocHash = await hashDoc(hashInput);
+  go(5);
+}
 
 function total() {
   return services.reduce((s, svc) => svc.selected ? s + svc.rate * svc.qty : s, 0);
@@ -1194,25 +1692,229 @@ function total() {
 
 function fmt(n) { return '$' + n.toLocaleString(); }
 
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+function updateHomeStats() {
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear  = now.getFullYear();
+
+  // Banner: Earned This Month — paid jobs this month ONLY
+  const earned = signedJobs
+    .filter(j => {
+      const d = new Date(j.signedAt || j.id);
+      return d.getMonth() === thisMonth && d.getFullYear() === thisYear
+        && normalizeStatus(j.status) === 'paid';
+    })
+    .reduce((sum, j) => sum + (j.total || 0), 0);
+  const elEarned = document.getElementById('statEarned');
+  if (elEarned) elEarned.textContent = fmt(earned);
+
+  // Tile 1: Open Quotes — draft status only (not sent)
+  const openDrafts = drafts.filter(d => (d.status || 'draft') === 'draft');
+  const openTotal  = openDrafts.reduce((sum, d) => sum + (d.amount || 0), 0);
+  const elOQ = document.getElementById('statOpenQuotes');
+  if (elOQ) elOQ.textContent = fmt(openTotal);
+  const elOQCount = document.getElementById('statOpenQuotesCount');
+  if (elOQCount) elOQCount.textContent = openDrafts.length + ' unsent';
+
+  // Tile 2: Awaiting Signature — dollar total + count of sent drafts
+  const awaitingDrafts = drafts.filter(d => d.status === 'sent');
+  const awaitingTotal  = awaitingDrafts.reduce((sum, d) => sum + (d.amount || 0), 0);
+  const elAwaiting = document.getElementById('statAwaiting');
+  if (elAwaiting) elAwaiting.textContent = fmt(awaitingTotal);
+  const elAwaitingCount = document.getElementById('statAwaitingCount');
+  if (elAwaitingCount) elAwaitingCount.textContent = awaitingDrafts.length + ' awaiting';
+
+  // Tile 3: Needs Serviced — dollar total + count of signed + needs_serviced jobs
+  const needsServicedJobs  = signedJobs.filter(j => ['signed', 'needs_serviced'].includes(normalizeStatus(j.status)));
+  const needsServicedTotal = needsServicedJobs.reduce((sum, j) => sum + (j.total || 0), 0);
+  const elNS = document.getElementById('statNeedsServiced');
+  if (elNS) elNS.textContent = fmt(needsServicedTotal);
+  const elNSCount = document.getElementById('statNeedsServicedCount');
+  if (elNSCount) elNSCount.textContent = needsServicedJobs.length + ' jobs';
+
+  // Tile 4: Unpaid Invoices — invoiced jobs total + count
+  const invoicedJobs = signedJobs.filter(j => normalizeStatus(j.status) === 'invoiced');
+  const invoicedTotal = invoicedJobs.reduce((sum, j) => sum + (j.total || 0), 0);
+  const elUnpaid = document.getElementById('statUnpaid');
+  if (elUnpaid) elUnpaid.textContent = fmt(invoicedTotal);
+  const elUnpaidCount = document.getElementById('statUnpaidCount');
+  if (elUnpaidCount) elUnpaidCount.textContent = invoicedJobs.length + ' outstanding';
+}
+
 // ── NAVIGATION ──
 function go(n) {
   document.querySelectorAll('.screen').forEach((s,i) => {
     s.classList.toggle('active', i === n);
   });
+  if (n === 0) {
+    currentQuoteNum  = 0;
+    currentCreatedAt = 0;
+    updateHomeStats();
+    renderRecentJobs();
+  }
+  if (n === 1) {
+    if (currentQuoteNum === 0) {
+      quoteCounter++;
+      localStorage.setItem(COUNTER_KEY, quoteCounter);
+      currentQuoteNum = quoteCounter;
+    }
+  }
   if (n === 2) renderServicesScreen();
-  if (n === 3) buildPreview();
+  if (n === 3) {
+    if (!currentCreatedAt) currentCreatedAt = Date.now();
+    buildPreview();
+  }
   if (n === 4) {
-    document.getElementById('sigAmount').textContent = fmt(total());
+    document.getElementById('sigAmount').textContent    = fmt(total());
+    document.getElementById('sigQuoteNum').textContent  = '#' + currentQuoteNum;
     initCanvas();
   }
   if (n === 5) {
-    document.getElementById('finalTotal').textContent = fmt(total());
-    // Push to recent activity
-    const name = document.getElementById('custName').value || 'Customer';
+    const signedAtHuman = fmtTimestamp(currentSignedAt);
+
+    const t = total();
+    document.getElementById('finalTotal').textContent = fmt(t);
+
+    const name    = document.getElementById('custName').value  || 'Customer';
+    const addr    = document.getElementById('custAddr').value  || '';
+    const city    = document.getElementById('custCity').value  || '';
+    const zip     = document.getElementById('custZip').value   || '';
+    const phone   = document.getElementById('custPhone').value || '';
+    const email   = document.getElementById('custEmail').value || '';
+    const notes   = document.getElementById('custNotes').value || '';
     const selected = services.filter(s => s.selected);
-    const summary = selected.map(s => s.name).join(', ');
-    addToRecent(name, summary, total());
-    // If this came from a draft, remove it
+    const summary  = selected.map(s => s.name).join(', ');
+
+    // Capture signature from canvas as PNG data URL
+    const sigCanvas = document.getElementById('sigCanvas');
+    const signature = sigCanvas.toDataURL('image/png');
+
+    const job = {
+      id: currentSignedAt,
+      quoteNum: currentQuoteNum,
+      name, addr, city, zip, phone, email, notes,
+      services: selected.map(s => ({ name: s.name, desc: s.desc, rate: s.rate, qty: s.qty })),
+      total: t,
+      date: new Date(currentSignedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      createdAt: currentCreatedAt,
+      signedAt: currentSignedAt,
+      signedAtHuman,
+      status: 'needs_serviced',
+      business: { ...config.business },
+      terms: config.terms,
+      signature,
+      docHash: currentDocHash,
+    };
+    signedJobs.unshift(job);
+    saveJobs();
+
+    // ── AUDIT RECORD ──
+    const auditRecord = {
+      quoteNumber:   currentQuoteNum,
+      businessName:  config.business.name,
+      businessEmail: config.business.email,
+      businessPhone: config.business.phone,
+      customerName:  name,
+      customerEmail: email,
+      customerPhone: phone,
+      lineItems:     selected.map(s => ({
+        name:     s.name,
+        qty:      s.qty,
+        rate:     s.rate,
+        subtotal: s.rate * s.qty,
+      })),
+      total:         t,
+      terms:         config.terms,
+      consentGiven:  true,
+      consentText:   'By signing, I agree to the terms of this quote and consent to conducting this transaction electronically.',
+      createdAt:     currentCreatedAt,
+      signedAt:      currentSignedAt,
+      signedAtHuman,
+      ipAddress:     'captured-on-server',
+      userAgent:     navigator.userAgent,
+      documentHash:  currentDocHash,
+      signatureImage: signature,
+    };
+
+    // Save individual record + append to master log
+    localStorage.setItem(`signedon_audit_${currentQuoteNum}`, JSON.stringify(auditRecord));
+    const auditLog = (() => { try { return JSON.parse(localStorage.getItem(AUDIT_LOG_KEY) || '[]'); } catch { return []; } })();
+    auditLog.push(auditRecord);
+    localStorage.setItem(AUDIT_LOG_KEY, JSON.stringify(auditLog));
+
+    console.log('Audit record saved:', auditRecord);
+
+    // Update success screen
+    document.getElementById('finalCustomer').textContent  = name;
+    document.getElementById('finalEmail').textContent     = email || '—';
+    document.getElementById('finalQuoteNum').textContent  = '#' + currentQuoteNum;
+    document.getElementById('finalSignedAt').textContent  = signedAtHuman;
+    document.getElementById('finalDocId').textContent     = currentDocHash.slice(0, 16);
+    document.getElementById('successMsg').textContent     = config.successMsg;
+    // Wire success screen action buttons
+    const sendBtn  = document.getElementById('successSendInvoiceBtn');
+    const paidBtn  = document.getElementById('successMarkPaidBtn');
+    const card     = document.getElementById('invoiceReadyCard');
+    const mailtoRow = document.getElementById('invoiceMailtoRow');
+
+    // Reset to active state for this signing session
+    sendBtn.style.display = '';
+    sendBtn.disabled = false;
+    card.style.display = 'none';
+    mailtoRow.style.display = 'none';
+    paidBtn.textContent = 'Mark as Paid';
+    paidBtn.disabled = false;
+    paidBtn.style.color = '';
+
+    _currentSuccessJobId = job.id;
+    _currentSuccessLink  = null;
+
+    sendBtn.onclick = async () => {
+      // TODO: Replace with real Supabase API call when backend is ready
+      const link = generateInvoiceLink(job.quoteNum);
+      _currentSuccessLink = link;
+      job.invoiceLink = link;
+      updateJobStatus(job.id, 'invoiced');
+
+      try {
+        await navigator.clipboard.writeText(link);
+        showToast('Link copied — will be live once backend is connected');
+      } catch { /* clipboard unavailable — link shown in card */ }
+
+      // Show invoice card
+      sendBtn.style.display = 'none';
+      document.getElementById('invoiceLinkText').textContent = link;
+      card.style.display = 'block';
+
+      // Mailto link if email present
+      if (email) {
+        const subj = encodeURIComponent(`Your Invoice INV-${job.quoteNum} from ${config.business.name}`);
+        const body = encodeURIComponent(`Hi ${name},\n\nHere is your invoice: ${link}\n\nThanks,\n${config.business.name}`);
+        // TODO: Replace with Resend API call
+        mailtoRow.innerHTML = `📧 <a href="mailto:${email}?subject=${subj}&body=${body}" style="color:var(--muted)">Send to ${email}</a>`;
+        mailtoRow.style.display = 'block';
+      }
+    };
+
+    paidBtn.onclick = () => {
+      updateJobStatus(job.id, 'paid');
+      showToast('Marked as paid ✓');
+      paidBtn.textContent = 'Paid ✓';
+      paidBtn.disabled = true;
+      paidBtn.style.color = '#16a34a';
+      sendBtn.disabled = true;
+    };
+
+    addToRecent(name, summary, t, job.id);
+
     if (activeDraftId !== null) {
       drafts = drafts.filter(d => d.id !== activeDraftId);
       activeDraftId = null;
@@ -1221,6 +1923,7 @@ function go(n) {
   }
   if (n === 6) renderAllJobs();
   if (n === 7) renderSettingsScreen();
+  // n === 9 (Invoice) is rendered by openInvoiceScreen() before calling go(9)
 }
 
 // ── SERVICES ──
@@ -1245,8 +1948,9 @@ function updatePrices() {
 
 // ── QUOTE PREVIEW ──
 function buildPreview() {
-  const d = new Date();
+  const d = new Date(currentCreatedAt);
   document.getElementById('quoteDate').textContent = d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  document.getElementById('quoteNum').textContent  = '#' + currentQuoteNum;
   document.getElementById('previewTotal').textContent = fmt(total());
 
   const name = document.getElementById('custName').value;
@@ -1270,7 +1974,26 @@ function buildPreview() {
 // ── SIGNATURE CANVAS ──
 let drawing = false, hasSig = false;
 
+function updateAcceptBtn() {
+  const ready = hasSig && document.getElementById('consentCheck').checked;
+  const btn   = document.getElementById('acceptBtn');
+  btn.style.opacity       = ready ? '1'    : '0.4';
+  btn.style.pointerEvents = ready ? 'auto' : 'none';
+}
+
+function onConsentChange() {
+  updateAcceptBtn();
+}
+
 function initCanvas() {
+  // Reset all sig state every time screen 4 opens
+  hasSig  = false;
+  drawing = false;
+  document.getElementById('consentCheck').checked    = false;
+  document.getElementById('sigLabel').style.opacity  = '1';
+  document.getElementById('sigPadWrap').classList.remove('signed');
+  updateAcceptBtn();
+
   const canvas = document.getElementById('sigCanvas');
   const wrap   = document.getElementById('sigPadWrap');
   const rect   = wrap.getBoundingClientRect();
@@ -1304,9 +2027,7 @@ function onDraw() {
     hasSig = true;
     document.getElementById('sigLabel').style.opacity = '0';
     document.getElementById('sigPadWrap').classList.add('signed');
-    const btn = document.getElementById('acceptBtn');
-    btn.style.opacity = '1';
-    btn.style.pointerEvents = 'auto';
+    updateAcceptBtn();
   }
 }
 
@@ -1317,9 +2038,7 @@ function clearSig() {
   hasSig = false;
   document.getElementById('sigLabel').style.opacity = '1';
   document.getElementById('sigPadWrap').classList.remove('signed');
-  const btn = document.getElementById('acceptBtn');
-  btn.style.opacity = '0.4';
-  btn.style.pointerEvents = 'none';
+  updateAcceptBtn();
 }
 
 // ── EMAIL MODAL ──
@@ -1334,12 +2053,12 @@ function hideEmailModal() {
 
 function sendEmail() {
   hideEmailModal();
-  // Show confirmation toast
-  const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:32px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;padding:12px 20px;border-radius:40px;font-size:13px;font-weight:700;white-space:nowrap;z-index:200;animation:slideUp 0.25s ease';
-  toast.textContent = '✓ Quote sent to ' + (document.getElementById('emailInput').value || 'customer');
-  document.getElementById('s3').appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  const emailAddr = document.getElementById('emailInput').value || 'customer';
+  upsertDraft(buildDraftData('sent'));
+  renderDrafts();
+  updateHomeStats();
+  showToast('✓ Quote sent to ' + emailAddr);
+  setTimeout(() => go(0), 800);
 }
 
 function renderServicesScreen() {
@@ -1372,18 +2091,37 @@ function renderServicesScreen() {
 // ── SETTINGS ──
 function renderSettingsScreen() {
   const c = config;
+  // App Identity
+  document.getElementById('setAppName').value              = c.appName   || 'SignedOn';
+  document.getElementById('setIconColor').value            = c.iconColor || '#0a0a0a';
+  document.getElementById('iconColorSwatch').style.background = c.iconColor || '#0a0a0a';
+  document.getElementById('iconColorHex').textContent      = c.iconColor || '#0a0a0a';
+  document.getElementById('iconClearBtn').style.display    = c.iconImage ? 'block' : 'none';
+  // Business Info
   document.getElementById('setBizName').value    = c.business.name;
   document.getElementById('setBizEmail').value   = c.business.email;
   document.getElementById('setBizPhone').value   = c.business.phone;
   document.getElementById('setTerms').value      = c.terms;
   document.getElementById('setSuccessMsg').value = c.successMsg;
+  const p = c.payment || {};
+  document.getElementById('setTapToPayEnabled').checked  = !!p.tapToPayEnabled;
+  document.getElementById('setStripeLink').value         = p.stripeLink      || '';
+  document.getElementById('setPaymentVenmo').value       = p.venmo           || '';
+  document.getElementById('setPaymentCashApp').value     = p.cashApp         || '';
+  document.getElementById('setPaymentZelle').value       = p.zelle           || '';
+  document.getElementById('setAchBankName').value        = p.achBankName     || '';
+  document.getElementById('setAchAccountName').value     = p.achAccountName  || '';
+  document.getElementById('setAchRouting').value         = p.achRouting      || '';
+  document.getElementById('setAchAccount').value         = p.achAccount      || '';
+  document.getElementById('setPaymentNotes').value       = p.notes           || '';
   renderSettingsServices();
+  updateIconPreview();
 }
 
 function renderSettingsServices() {
   const list = document.getElementById('settingsServicesList');
   list.innerHTML = config.services.map((s, i) => `
-    <div style="background:var(--white);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--line)">
+    <div style="background:var(--surface);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--line)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Service ${i+1}</div>
         <div onclick="removeServiceRow(${i})" style="font-size:12px;font-weight:700;color:#e05c4b;cursor:pointer">Remove</div>
@@ -1418,13 +2156,41 @@ function removeServiceRow(i) {
 }
 
 function saveSettings() {
+  // Track identity before save to detect changes
+  const prevAppName   = config.appName;
+  const prevIconColor = config.iconColor;
+  const prevIconImage = config.iconImage;
+
+  // App Identity fields
+  config.appName   = document.getElementById('setAppName').value.trim() || 'SignedOn';
+  config.iconColor = document.getElementById('setIconColor').value || '#0a0a0a';
+  // config.iconImage already updated live by handleIconUpload / clearIconImage
+
+  // Business fields
   config.business.name  = document.getElementById('setBizName').value.trim()  || defaultConfig.business.name;
   config.business.email = document.getElementById('setBizEmail').value.trim() || defaultConfig.business.email;
   config.business.phone = document.getElementById('setBizPhone').value.trim() || defaultConfig.business.phone;
   config.terms          = document.getElementById('setTerms').value.trim()    || defaultConfig.terms;
   config.successMsg     = document.getElementById('setSuccessMsg').value.trim() || defaultConfig.successMsg;
+  config.payment = {
+    tapToPayEnabled: document.getElementById('setTapToPayEnabled').checked,
+    stripeLink:      document.getElementById('setStripeLink').value.trim(),
+    venmo:           document.getElementById('setPaymentVenmo').value.trim(),
+    cashApp:         document.getElementById('setPaymentCashApp').value.trim(),
+    zelle:           document.getElementById('setPaymentZelle').value.trim(),
+    achBankName:     document.getElementById('setAchBankName').value.trim(),
+    achAccountName:  document.getElementById('setAchAccountName').value.trim(),
+    achRouting:      document.getElementById('setAchRouting').value.trim(),
+    achAccount:      document.getElementById('setAchAccount').value.trim(),
+    notes:           document.getElementById('setPaymentNotes').value.trim(),
+  };
 
   saveConfig(config);
+
+  // Show reinstall banner if identity changed
+  if (config.appName !== prevAppName || config.iconColor !== prevIconColor || config.iconImage !== prevIconImage) {
+    document.getElementById('reinstallBanner').style.display = 'block';
+  }
 
   // Rebuild services from config
   services.length = 0;
@@ -1436,14 +2202,316 @@ function saveSettings() {
   const btn = document.getElementById('settingsSaveBtn');
   btn.textContent = '✓ Saved';
   btn.style.color = '#2a7a55';
-  setTimeout(() => { btn.textContent = 'Save'; btn.style.color = 'var(--accent)'; }, 1800);
+  setTimeout(() => { btn.textContent = 'Save'; btn.style.color = 'var(--ink)'; }, 1800);
+}
+
+// ── INVOICE LINK ──
+// TODO: Replace with real Supabase API call when backend is ready
+function generateInvoiceLink(quoteNumber) {
+  return `https://signedon.app/invoice/INV-${quoteNumber}`;
+}
+
+// ── INVOICE SCREEN (SCREEN 9) ──
+let _currentSuccessJobId = null;
+let _currentSuccessLink  = null;
+
+function openInvoiceScreen(jobId, fromScreen) {
+  const job = signedJobs.find(j => j.id === jobId);
+  if (!job) return;
+
+  window._invoiceSource = fromScreen !== undefined ? fromScreen : 0;
+  const link = job.invoiceLink || generateInvoiceLink(job.quoteNum);
+  const st = normalizeStatus(job.status);
+  const isPaid = st === 'paid';
+  const b = job.business || config.business;
+
+  document.getElementById('invoiceTitle').textContent = 'Invoice #' + job.quoteNum;
+  document.getElementById('invoiceBack').onclick = () => go(window._invoiceSource || 0);
+  document.getElementById('invoiceShareBtn').onclick = () => shareInvoiceLinkDirect(link, job.quoteNum);
+
+  const dueDate = new Date((job.signedAt || job.id) + 30 * 24 * 60 * 60 * 1000);
+  const dueDateStr = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  const statusBanner = `
+    <div id="invoiceStatusBanner" style="background:${isPaid ? '#dcfce7' : '#fef9c3'};border:1px solid ${isPaid ? '#bbf7d0' : '#fde047'};border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;color:${isPaid ? '#15803d' : '#713f12'};display:flex;align-items:center;gap:8px;margin-bottom:16px">
+      ${isPaid ? '✓ PAID' : `● PAYMENT DUE &nbsp;&nbsp; Due: ${dueDateStr}`}
+    </div>`;
+
+  const lineItems = job.services.map(s => `
+    <div class="line-item">
+      <div><div class="li-name">${s.name}${s.qty > 1 ? ' × ' + s.qty : ''}</div><div class="li-desc">${s.desc || ''}</div></div>
+      <div class="li-price">${fmt(s.rate * s.qty)}</div>
+    </div>`).join('');
+
+  const sigSection = job.signature ? `
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Signed by ${job.name}</div>
+      <img src="${job.signature}" style="max-width:200px;height:60px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;display:block">
+      <div style="font-size:10px;color:var(--muted);margin-top:6px">${job.signedAtHuman || job.date}</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:2px;font-family:monospace">Doc ID: ${(job.docHash || '').slice(0, 16)}</div>
+    </div>` : '';
+
+  const paySection = buildInvoicePaymentSection(job, isPaid, dueDateStr);
+
+  document.getElementById('invoiceDoc').innerHTML = `
+    <div class="quote-brand">
+      <div>
+        <div style="width:30px;height:30px;border-radius:7px;background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--paper);font-size:14px;font-family:'DM Serif Display',serif">${(b.name || 'S')[0].toUpperCase()}</div>
+        <div style="font-size:15px;font-weight:800;color:var(--ink);margin-top:6px">${b.name}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:1px">${b.email} · ${b.phone}</div>
+      </div>
+      <span class="qt-badge">INVOICE</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Invoice #${job.quoteNum} · ${job.date}</div>
+    ${statusBanner}
+    <div class="quote-to" style="margin-bottom:16px">
+      <div class="qt-label">Billed To</div>
+      <div class="qt-name">${job.name}</div>
+      ${job.email ? `<div class="qt-addr">${job.email}</div>` : ''}
+      ${job.phone ? `<div class="qt-addr">${job.phone}</div>` : ''}
+      ${job.addr  ? `<div class="qt-addr">${job.addr}${job.city ? ', ' + job.city : ''}${job.zip ? ' ' + job.zip : ''}</div>` : ''}
+    </div>
+    <div class="line-items">${lineItems}</div>
+    <div class="quote-total-section"><div class="qt-total-lbl">Total</div><div class="qt-total-amt">${fmt(job.total)}</div></div>
+    ${job.terms ? `<div class="quote-note">${job.terms}</div>` : ''}
+    ${sigSection}
+    ${paySection}`;
+
+  go(9);
+}
+
+function buildInvoicePaymentSection(job, isPaid, dueDateStr) {
+  if (isPaid) {
+    return `<div style="margin-top:20px;padding-top:18px;border-top:1.5px solid var(--line)">
+      <div style="background:#dcfce7;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;text-align:center;font-size:13px;font-weight:700;color:#15803d">✓ Payment received</div>
+    </div>`;
+  }
+  const p = config.payment || {};
+  const hasBankInfo = p.achBankName || p.achAccountName || p.achRouting || p.achAccount || p.venmo || p.cashApp || p.zelle || p.stripeLink || p.notes;
+  const bankRows = hasBankInfo ? `
+    <div style="font-size:13px;line-height:2.2;margin-top:8px">
+      ${p.achBankName    ? `<div><span style="color:var(--muted);font-size:11px;width:110px;display:inline-block">Bank:</span>${p.achBankName}</div>` : ''}
+      ${p.achAccountName ? `<div><span style="color:var(--muted);font-size:11px;width:110px;display:inline-block">Account Name:</span>${p.achAccountName}</div>` : ''}
+      ${p.achRouting     ? `<div><span style="color:var(--muted);font-size:11px;width:110px;display:inline-block">Routing:</span>${p.achRouting}</div>` : ''}
+      ${p.achAccount     ? `<div><span style="color:var(--muted);font-size:11px;width:110px;display:inline-block">Account:</span>••••${p.achAccount.slice(-4)}</div>` : ''}
+      ${p.venmo          ? `<div><span style="color:var(--muted);font-size:11px;width:110px;display:inline-block">Venmo:</span>@${p.venmo.replace(/^@/,'')}</div>` : ''}
+      ${p.cashApp        ? `<div><span style="color:var(--muted);font-size:11px;width:110px;display:inline-block">Cash App:</span>$${p.cashApp.replace(/^\$/,'')}</div>` : ''}
+      ${p.zelle          ? `<div><span style="color:var(--muted);font-size:11px;width:110px;display:inline-block">Zelle:</span>${p.zelle}</div>` : ''}
+      ${p.notes          ? `<div style="color:var(--muted);font-size:11px;margin-top:4px">${p.notes}</div>` : ''}
+    </div>` : `<div style="font-size:12px;color:var(--muted);padding:10px;background:var(--surface);border-radius:8px;margin-top:8px">Add payment methods in Settings → Payment Methods</div>`;
+
+  return `
+    <div style="margin-top:20px;padding-top:18px;border-top:1.5px solid var(--line)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Payment</div>
+      <div style="background:var(--surface);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px"><span style="color:var(--muted)">Amount Due</span><span style="font-weight:800">${fmt(job.total)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px"><span style="color:var(--muted)">Invoice #</span><span style="font-weight:700">INV-${job.quoteNum}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px"><span style="color:var(--muted)">Due Date</span><span style="font-weight:700">${dueDateStr}</span></div>
+      </div>
+      <button class="btn btn-outline" onclick="showToast('Card payments coming soon')" style="margin-bottom:10px">
+        💳 Pay by Card
+        <!-- TODO: Wire to Stripe -->
+      </button>
+      <button class="btn btn-outline" id="bankTransferBtn" onclick="toggleBankTransfer()" style="margin-bottom:4px">🏦 Bank Transfer</button>
+      <div id="bankTransferDetails" style="display:none;background:var(--surface);border-radius:12px;padding:14px 16px;margin-bottom:10px">${bankRows}</div>
+      <button class="btn btn-outline" id="cashPaidBtn" onclick="markCashPaidFromInvoice('${job.id}')" style="margin-bottom:10px;border-color:#16a34a;color:#16a34a">💵 Mark as Cash Paid</button>
+    </div>`;
+}
+
+function shareInvoiceLinkDirect(link, quoteNum) {
+  if (navigator.share) {
+    navigator.share({ title: 'Invoice #' + quoteNum, url: link }).catch(() => {
+      navigator.clipboard.writeText(link).then(() => showToast('Link copied — will be live once backend is connected')).catch(() => {});
+    });
+  } else {
+    navigator.clipboard.writeText(link)
+      .then(() => showToast('Link copied — will be live once backend is connected'))
+      .catch(() => showToast(link));
+  }
+}
+
+function toggleBankTransfer() {
+  const d = document.getElementById('bankTransferDetails');
+  const btn = document.getElementById('bankTransferBtn');
+  if (!d) return;
+  const open = d.style.display !== 'none';
+  d.style.display = open ? 'none' : 'block';
+  if (btn) btn.textContent = open ? '🏦 Bank Transfer' : '🏦 Bank Transfer ↑';
+}
+
+function markCashPaidFromInvoice(jobId) {
+  const btn = document.getElementById('cashPaidBtn');
+  if (!btn || btn.disabled) return;
+  if (btn.dataset.confirming === 'yes') {
+    btn.dataset.confirming = '';
+    updateJobStatus(jobId, 'paid');
+    showToast('Payment recorded ✓');
+    // Update status banner to PAID
+    const banner = document.getElementById('invoiceStatusBanner');
+    if (banner) {
+      banner.style.background = '#dcfce7';
+      banner.style.borderColor = '#bbf7d0';
+      banner.style.color = '#15803d';
+      banner.innerHTML = '✓ PAID';
+    }
+    // Disable all payment buttons
+    ['cashPaidBtn', 'bankTransferBtn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.disabled = true; el.style.opacity = '0.4'; }
+    });
+    document.querySelectorAll('#invoiceDoc .btn-outline').forEach(b => { b.disabled = true; b.style.opacity = '0.4'; });
+  } else {
+    btn.dataset.confirming = 'yes';
+    btn.textContent = 'Tap again to confirm';
+    btn.style.background = '#dcfce7';
+    setTimeout(() => {
+      if (btn.dataset.confirming === 'yes') {
+        btn.dataset.confirming = '';
+        btn.textContent = '💵 Mark as Cash Paid';
+        btn.style.background = '';
+      }
+    }, 3000);
+  }
+}
+
+function copyCurrentInvoiceLink() {
+  if (!_currentSuccessLink) return;
+  navigator.clipboard.writeText(_currentSuccessLink)
+    .then(() => showToast('Link copied'))
+    .catch(() => showToast(_currentSuccessLink));
+}
+
+function shareCurrentInvoiceLink() {
+  if (!_currentSuccessLink) return;
+  if (navigator.share) {
+    navigator.share({ title: 'Invoice', url: _currentSuccessLink }).catch(() => copyCurrentInvoiceLink());
+  } else {
+    copyCurrentInvoiceLink();
+  }
+}
+
+function previewCurrentInvoice() {
+  if (!_currentSuccessJobId) return;
+  openInvoiceScreen(_currentSuccessJobId, 5);
+}
+
+// ── APP IDENTITY ──
+
+function generateIconDataURL(size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (config.iconImage) {
+    const img = new Image();
+    img.src = config.iconImage;
+    ctx.drawImage(img, 0, 0, size, size);
+  } else {
+    const letter = (config.appName || 'S')[0].toUpperCase();
+    ctx.fillStyle = config.iconColor || '#0a0a0a';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `bold ${Math.floor(size * 0.45)}px 'DM Serif Display', serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(letter, size / 2, size / 2);
+  }
+  return canvas.toDataURL('image/png');
+}
+
+function generateManifest() {
+  const manifest = {
+    name: config.appName || 'SignedOn',
+    short_name: config.appName || 'SignedOn',
+    description: 'Quote, sign, and invoice on-site.',
+    start_url: '/',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: config.iconColor || '#0a0a0a',
+    theme_color: config.iconColor || '#0a0a0a',
+    icons: [
+      { src: generateIconDataURL(192), sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: generateIconDataURL(512), sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+    ],
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  let link = document.querySelector('link[rel="manifest"]');
+  if (!link) { link = document.createElement('link'); link.rel = 'manifest'; document.head.appendChild(link); }
+  link.href = url;
+}
+
+function updateAppleMeta() {
+  const iconUrl = generateIconDataURL(192);
+  let appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
+  if (!appleIcon) { appleIcon = document.createElement('link'); appleIcon.rel = 'apple-touch-icon'; document.head.appendChild(appleIcon); }
+  appleIcon.href = iconUrl;
+
+  let appleTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+  if (!appleTitle) { appleTitle = document.createElement('meta'); appleTitle.name = 'apple-mobile-web-app-title'; document.head.appendChild(appleTitle); }
+  appleTitle.content = config.appName || 'SignedOn';
+}
+
+function updateIconPreview() {
+  const nameEl  = document.getElementById('setAppName');
+  const colorEl = document.getElementById('setIconColor');
+  const imgEl   = document.getElementById('iconPreviewImg');
+  if (!imgEl) return;
+
+  const name  = (nameEl  ? nameEl.value  : null) || config.appName  || 'S';
+  const color = (colorEl ? colorEl.value : null) || config.iconColor || '#0a0a0a';
+
+  if (config.iconImage) {
+    imgEl.src = config.iconImage;
+    return;
+  }
+
+  const size = 72;
+  const canvas = document.createElement('canvas');
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const letter = (name || 'S')[0].toUpperCase();
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${Math.floor(size * 0.45)}px 'DM Serif Display', serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(letter, size / 2, size / 2);
+  imgEl.src = canvas.toDataURL('image/png');
+}
+
+function handleIconUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    config.iconImage = e.target.result;
+    const clearBtn = document.getElementById('iconClearBtn');
+    if (clearBtn) clearBtn.style.display = 'block';
+    updateIconPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearIconImage() {
+  config.iconImage = null;
+  const fileInput = document.getElementById('setIconImage');
+  if (fileInput) fileInput.value = '';
+  const clearBtn = document.getElementById('iconClearBtn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  updateIconPreview();
 }
 
 function applyConfig() {
   const b = config.business;
+  // Page title
+  document.title = config.appName || 'SignedOn';
   // Home screen
   const homeEl = document.getElementById('homeBizName');
   if (homeEl) homeEl.textContent = b.name;
+  updateHomeStats();
+  renderRecentJobs();
   // Quote doc
   const brandName = document.getElementById('brandName');
   if (brandName) brandName.textContent = b.name;
@@ -1457,6 +2525,9 @@ function applyConfig() {
   // Success msg
   const successEl = document.getElementById('successMsg');
   if (successEl) successEl.textContent = config.successMsg;
+  // PWA manifest + apple meta
+  generateManifest();
+  updateAppleMeta();
 }
 
 function resetConfig() {
@@ -1483,29 +2554,37 @@ function resetConfig() {
 }
 
 // ── ALL JOBS ──
-const allJobs = [
-  { name: 'Sarah Johnson',   sub: 'Lawn care + hedging',  amt: 340,  status: 'awaiting', date: 'Feb 21' },
-  { name: 'Carlos Mendez',   sub: 'Driveway edging',      amt: 180,  status: 'awaiting', date: 'Feb 20' },
-  { name: 'Priya Patel',     sub: 'Spring cleanup',       amt: 260,  status: 'awaiting', date: 'Feb 19' },
-  { name: 'Tom & Lisa Park', sub: 'Full garden redesign', amt: 1200, status: 'signed',   date: 'Feb 18' },
-  { name: 'Robert Nguyen',   sub: 'Lawn + hedging',       amt: 580,  status: 'unpaid',   date: 'Feb 17' },
-  { name: 'Angela Reyes',    sub: 'Mulch beds × 4',       amt: 260,  status: 'unpaid',   date: 'Feb 16' },
-  { name: 'James O\'Brien',  sub: 'Leaf cleanup',         amt: 330,  status: 'paid',     date: 'Feb 14' },
-  { name: 'Wei & Fang Liu',  sub: 'Weed control',         amt: 165,  status: 'paid',     date: 'Feb 12' },
-  { name: 'Dana Kowalski',   sub: 'Seasonal trim',        amt: 420,  status: 'paid',     date: 'Feb 10' },
-  { name: 'Marcus Bell',     sub: 'Full lawn care',       amt: 510,  status: 'paid',     date: 'Feb 8'  },
-  { name: 'Susan Hargrove',  sub: 'Hedge shaping',        amt: 355,  status: 'paid',     date: 'Feb 5'  },
-];
 
 let currentFilter = 'all';
 let currentSearch = '';
 
 const statusConfig = {
-  awaiting: { label: 'Awaiting Signature', dot: 'dot-pending', color: '#f59e0b' },
-  signed:   { label: 'Signed',             dot: 'dot-signed',  color: 'var(--accent)' },
-  unpaid:   { label: 'Invoice Unpaid',     dot: 'dot-sent',    color: '#6366f1' },
-  paid:     { label: 'Paid ✓',             dot: 'dot-signed',  color: 'var(--accent)' },
+  draft:          { label: 'Draft',              dot: 'dot-draft',     color: '#C0BAB0' },
+  sent:           { label: 'Awaiting Signature', dot: 'dot-sent',      color: '#7B8CDE' },
+  signed:         { label: 'Signed ✓',           dot: 'dot-signed',    color: '#1A1712' },
+  needs_serviced: { label: 'Needs Serviced',     dot: 'dot-service',   color: '#D4963A' },
+  invoiced:       { label: 'Invoice Sent',       dot: 'dot-invoiced',  color: '#C0522A' },
+  paid:           { label: 'Paid ✓',             dot: 'dot-paid',      color: '#3A8C5C' },
 };
+
+// Map legacy status values to the 6-stage system
+function normalizeStatus(s) {
+  const legacy = { awaiting: 'sent', unpaid: 'invoiced' };
+  const normalized = legacy[s] || s;
+  return statusConfig[normalized] ? normalized : 'needs_serviced';
+}
+
+function getStatusDotClass(status) {
+  const map = {
+    draft:          'dot-draft',
+    sent:           'dot-sent',
+    signed:         'dot-signed',
+    needs_serviced: 'dot-service',
+    invoiced:       'dot-invoiced',
+    paid:           'dot-paid',
+  };
+  return map[status] || 'dot-draft';
+}
 
 function filterJobs(filter, el) {
   currentFilter = filter;
@@ -1520,21 +2599,37 @@ function searchJobs(val) {
 }
 
 function renderAllJobs() {
-  // Merge in live completed jobs
-  const liveJobs = (window._completedJobs || []).map(j => ({
-    name: j.name, sub: j.summary, amt: j.amount, status: 'signed', date: 'Today'
+  // Combine signed jobs + drafts into a unified list
+  const signedRows = signedJobs.map(j => ({
+    name: j.name,
+    sub: j.services.map(s => s.name).join(', '),
+    amt: j.total,
+    status: normalizeStatus(j.status),
+    date: j.date,
+    jobId: j.id,
   }));
-  const jobs = [...liveJobs, ...allJobs];
+  const draftRows = drafts.map(d => ({
+    name: d.name,
+    sub: d.summary,
+    amt: d.amount,
+    status: d.status || 'draft',
+    date: d.date,
+    jobId: null,
+    draftId: d.id,
+  }));
+  const jobs = [...draftRows, ...signedRows];
 
-  let filtered = jobs.filter(j => {
+  const filtered = jobs.filter(j => {
     const matchSearch = !currentSearch ||
       j.name.toLowerCase().includes(currentSearch) ||
       j.sub.toLowerCase().includes(currentSearch);
     const matchFilter =
-      currentFilter === 'all' ? true :
-      currentFilter === 'action' ? (j.status === 'awaiting' || j.status === 'unpaid') :
-      currentFilter === 'signed' ? (j.status === 'signed') :
-      currentFilter === 'paid'   ? (j.status === 'paid') : true;
+      currentFilter === 'all'            ? true :
+      currentFilter === 'open'           ? (j.status === 'draft' || j.status === 'sent') :
+      currentFilter === 'awaiting'       ? (j.status === 'sent') :
+      currentFilter === 'needs_serviced' ? (j.status === 'signed' || j.status === 'needs_serviced') :
+      currentFilter === 'invoiced'       ? (j.status === 'invoiced') :
+      currentFilter === 'paid'           ? (j.status === 'paid') : true;
     return matchSearch && matchFilter;
   });
 
@@ -1545,129 +2640,214 @@ function renderAllJobs() {
     return;
   }
 
-  list.innerHTML = filtered.map(j => {
-    const cfg = statusConfig[j.status];
-    return `
-      <div class="job-row" style="margin-top:10px">
-        <div class="job-dot ${cfg.dot}"></div>
-        <div class="job-info">
-          <div class="job-name">${j.name}</div>
-          <div class="job-sub">${j.sub} · ${j.date}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-          <div class="job-amt">${fmt(j.amt)}</div>
-          <div style="font-size:10px;font-weight:700;color:${cfg.color};white-space:nowrap">${cfg.label}</div>
-        </div>
+  list.innerHTML = '';
+  filtered.forEach(j => {
+    const cfg = statusConfig[j.status] || statusConfig.needs_serviced;
+    const dotClass = getStatusDotClass(j.status);
+    const canViewInvoice = j.jobId && (j.status === 'invoiced' || j.status === 'paid');
+    const fullJob = j.jobId ? signedJobs.find(sj => sj.id === j.jobId) : null;
+    const invLink = fullJob ? (fullJob.invoiceLink || generateInvoiceLink(fullJob.quoteNum)) : null;
+
+    const row = document.createElement('div');
+    row.className = 'job-row' + (j.jobId || j.draftId ? ' job-row-live' : '');
+    row.style.marginTop = '6px';
+    if (j.jobId) row.addEventListener('click', () => openJobDetail(j.jobId, 6));
+    else if (j.draftId) row.addEventListener('click', () => loadDraftToQuote(j.draftId));
+    row.innerHTML = `
+      <div class="job-dot ${dotClass}"></div>
+      <div class="job-info">
+        <div class="job-name">${j.name}</div>
+        <div class="job-sub">${j.sub} · ${j.date}</div>
+        ${canViewInvoice ? `<div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+          <span style="font-size:11px;font-weight:700;color:var(--ink);cursor:pointer" data-job-id="${j.jobId}">View Invoice →</span>
+          <span style="font-size:11px;color:var(--muted);cursor:pointer" data-copy-link="${invLink}" title="Copy invoice link">⬆</span>
+        </div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="job-amt">${fmt(j.amt)}</div>
+        <div style="font-size:9px;font-weight:700;color:${cfg.color};white-space:nowrap">${cfg.label}</div>
       </div>`;
-  }).join('');
+    // Wire View Invoice and copy links without bubbling to row click
+    if (canViewInvoice) {
+      const viewBtn = row.querySelector('[data-job-id]');
+      const copyBtn = row.querySelector('[data-copy-link]');
+      if (viewBtn) viewBtn.addEventListener('click', e => { e.stopPropagation(); openInvoiceScreen(j.jobId, 6); });
+      if (copyBtn) copyBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(invLink)
+          .then(() => showToast('Link copied'))
+          .catch(() => showToast(invLink));
+      });
+    }
+    list.appendChild(row);
+  });
 }
 
 // ── STAT DRAWER ──
-const drawerData = {
-  awaiting: {
-    title: '⏳ Awaiting Signature',
-    items: [
-      { name: 'Sarah Johnson',    sub: 'Lawn care + hedging',  amt: '$340',   dot: 'dot-pending' },
-      { name: 'Carlos Mendez',    sub: 'Driveway edging',      amt: '$180',   dot: 'dot-pending' },
-      { name: 'Priya Patel',      sub: 'Spring cleanup',       amt: '$260',   dot: 'dot-pending' },
-    ]
-  },
-  earned: {
-    title: '💰 Earned This Month',
-    items: [
-      { name: 'Tom & Lisa Park',  sub: 'Full garden redesign', amt: '$1,200', dot: 'dot-signed' },
-      { name: 'Robert Nguyen',    sub: 'Lawn + hedging',       amt: '$580',   dot: 'dot-signed' },
-      { name: 'Angela Reyes',     sub: 'Mulch beds × 4',       amt: '$260',   dot: 'dot-signed' },
-      { name: 'James O\'Brien',   sub: 'Leaf cleanup',         amt: '$330',   dot: 'dot-signed' },
-      { name: 'Wei & Fang Liu',   sub: 'Weed control',         amt: '$165',   dot: 'dot-signed' },
-      { name: 'Dana Kowalski',    sub: 'Seasonal trim',        amt: '$420',   dot: 'dot-signed' },
-      { name: 'Marcus Bell',      sub: 'Full lawn care',       amt: '$510',   dot: 'dot-signed' },
-      { name: 'Susan Hargrove',   sub: 'Hedge shaping',        amt: '$355',   dot: 'dot-signed' },
-    ],
-    footer: true
-  },
-  unpaid: {
-    title: '🧾 Unpaid Invoices',
-    items: [
-      { name: 'Robert Nguyen',    sub: 'Invoice sent 3 days ago', amt: '$580', dot: 'dot-sent', action: 'Send Reminder' },
-      { name: 'Angela Reyes',     sub: 'Invoice sent today',      amt: '$260', dot: 'dot-sent', action: 'Send Reminder' },
-    ]
-  },
-  jobs: {
-    title: '📋 Jobs This Month',
-    items: [
-      { name: 'Tom & Lisa Park',  sub: 'Full garden redesign', amt: '$1,200', dot: 'dot-signed' },
-      { name: 'Robert Nguyen',    sub: 'Lawn + hedging',       amt: '$580',   dot: 'dot-sent'   },
-      { name: 'Angela Reyes',     sub: 'Mulch beds × 4',       amt: '$260',   dot: 'dot-sent'   },
-      { name: 'James O\'Brien',   sub: 'Leaf cleanup',         amt: '$330',   dot: 'dot-signed' },
-      { name: 'Wei & Fang Liu',   sub: 'Weed control',         amt: '$165',   dot: 'dot-signed' },
-      { name: 'Dana Kowalski',    sub: 'Seasonal trim',        amt: '$420',   dot: 'dot-signed' },
-      { name: 'Marcus Bell',      sub: 'Full lawn care',       amt: '$510',   dot: 'dot-signed' },
-      { name: 'Susan Hargrove',   sub: 'Hedge shaping',        amt: '$355',   dot: 'dot-signed' },
-    ]
-  }
-};
-
 function openDrawer(type) {
-  const data = drawerData[type];
-  document.getElementById('drawerTitle').textContent = data.title;
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear  = now.getFullYear();
 
-  // Merge in any newly signed jobs for relevant views
-  const extra = window._completedJobs || [];
+  let title, rows, showTotal = false;
 
-  let rows = [...data.items];
-  if (type === 'jobs' || type === 'earned') {
-    extra.forEach(j => rows.unshift({ name: j.name, sub: j.summary, amt: fmt(j.amount), dot: 'dot-signed' }));
+  if (type === 'openquotes') {
+    title = '📋 Open Quotes';
+    rows = drafts.map(d => {
+      const st = d.status || 'draft';
+      const cfg = statusConfig[st] || statusConfig.draft;
+      return { name: d.name, sub: cfg.label, amt: fmt(d.amount), dot: getStatusDotClass(st), statusLabel: cfg.label, statusColor: cfg.color };
+    });
+  } else if (type === 'awaiting') {
+    title = '⏳ Awaiting Signature';
+    rows = drafts
+      .filter(d => d.status === 'sent')
+      .map(d => ({ name: d.name, sub: d.summary || '', amt: fmt(d.amount), dot: getStatusDotClass('sent') }));
+  } else if (type === 'needs_serviced') {
+    title = '🔧 Needs Serviced';
+    rows = signedJobs
+      .filter(j => ['signed', 'needs_serviced'].includes(normalizeStatus(j.status)))
+      .map(j => {
+        const st = normalizeStatus(j.status);
+        const cfg = statusConfig[st];
+        return { name: j.name, sub: j.services.map(s => s.name).join(', '), amt: fmt(j.total), dot: getStatusDotClass(st), statusLabel: cfg.label, statusColor: cfg.color };
+      });
+  } else if (type === 'earned') {
+    title = '💰 Earned This Month';
+    rows = signedJobs
+      .filter(j => {
+        const d = new Date(j.signedAt || j.id);
+        return d.getMonth() === thisMonth && d.getFullYear() === thisYear
+          && normalizeStatus(j.status) === 'paid';
+      })
+      .map(j => ({ name: j.name, sub: j.services.map(s => s.name).join(', '), amt: fmt(j.total), dot: getStatusDotClass('paid') }));
+    showTotal = true;
+  } else if (type === 'unpaid') {
+    title = '🧾 Unpaid Invoices';
+    rows = signedJobs
+      .filter(j => normalizeStatus(j.status) === 'invoiced')
+      .map(j => ({ name: j.name, sub: j.services.map(s => s.name).join(', '), amt: fmt(j.total), dot: getStatusDotClass('invoiced') }));
   }
+
+  document.getElementById('drawerTitle').textContent = title;
+  document.getElementById('drawerSub').textContent = '';
 
   let html = '';
-  rows.forEach(item => {
-    html += `
-      <div class="job-row" style="margin-bottom:8px">
-        <div class="job-dot ${item.dot}"></div>
-        <div class="job-info">
-          <div class="job-name">${item.name}</div>
-          <div class="job-sub">${item.sub}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
-          <div class="job-amt">${item.amt}</div>
-          ${item.action ? `<div style="font-size:11px;font-weight:700;color:var(--accent);cursor:pointer">${item.action}</div>` : ''}
-        </div>
+  if (rows.length === 0) {
+    html = `<div style="text-align:center;padding:32px 20px;color:var(--muted);font-size:14px;font-weight:500">Nothing here yet</div>`;
+  } else {
+    rows.forEach(item => {
+      html += `
+        <div class="job-row">
+          <div class="job-dot ${item.dot}"></div>
+          <div class="job-info">
+            <div class="job-name">${item.name}</div>
+            <div class="job-sub">${item.sub}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+            <div class="job-amt">${item.amt}</div>
+            ${item.statusLabel ? `<div style="font-size:9px;font-weight:700;color:${item.statusColor};white-space:nowrap">${item.statusLabel}</div>` : ''}
+          </div>
+        </div>`;
+    });
+    if (showTotal) {
+      const total = rows.reduce((s, r) => s + (parseFloat(r.amt.replace(/[^0-9.]/g, '')) || 0), 0);
+      html += `<div style="background:var(--paper2);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted)">Total Earned</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);letter-spacing:-0.4px">${fmt(total)}</div>
       </div>`;
-  });
-
-  if (data.footer) {
-    const total = rows.reduce((s, r) => s + parseInt(r.amt.replace(/\D/g,'')), 0);
-    html += `<div style="background:var(--accent-light);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-      <div style="font-size:13px;font-weight:700;color:var(--muted)">Total Earned</div>
-      <div style="font-size:20px;font-weight:800;color:var(--accent)">$${total.toLocaleString()}</div>
-    </div>`;
+    }
   }
 
   document.getElementById('drawerBody').innerHTML = html;
-  const drawer = document.getElementById('statDrawer');
-  drawer.style.display = 'flex';
+  const overlay = document.getElementById('statDrawer');
+  const panel = document.getElementById('statDrawerInner');
+  overlay.classList.add('open');
+  requestAnimationFrame(() => panel.classList.add('open'));
 }
 
 function closeDrawer() {
-  document.getElementById('statDrawer').style.display = 'none';
+  const panel = document.getElementById('statDrawerInner');
+  panel.classList.remove('open');
+  setTimeout(() => document.getElementById('statDrawer').classList.remove('open'), 300);
 }
 
 // ── RECENT ACTIVITY ──
-function addToRecent(name, summary, amount) {
-  // Store for drawer
-  window._completedJobs = window._completedJobs || [];
-  window._completedJobs.unshift({ name, summary, amount });
+function loadDraftToQuote(draftId) {
+  const d = drafts.find(x => x.id == draftId);
+  if (!d) return;
+  activeDraftId   = d.id;
+  currentCreatedAt = d.createdAt || 0;
+  currentQuoteNum  = d.quoteNum  || 0;
+  document.getElementById('custName').value  = d.custName  || '';
+  document.getElementById('custAddr').value  = d.custAddr  || '';
+  document.getElementById('custCity').value  = d.custCity  || '';
+  document.getElementById('custZip').value   = d.custZip   || '';
+  document.getElementById('custPhone').value = d.custPhone || '';
+  document.getElementById('custEmail').value = d.custEmail || '';
+  document.getElementById('custNotes').value = d.custNotes || '';
+  if (d.services && d.services.length) {
+    services.forEach(s => { s.selected = false; s.qty = 1; });
+    d.services.forEach(ds => {
+      const sv = services.find(s => s.name === ds.name);
+      if (sv) { sv.selected = true; sv.qty = ds.qty || 1; }
+    });
+  }
+  go(3);
+}
 
+function renderRecentJobs() {
+  const list = document.getElementById('recentList');
+  list.innerHTML = '';
+
+  // Combine signed jobs + sent drafts, newest first
+  const sentDrafts = drafts.filter(d => d.status === 'sent');
+  const combined = [
+    ...signedJobs.map(j => ({ type: 'job', data: j, sortKey: j.signedAt || j.id })),
+    ...sentDrafts.map(d => ({ type: 'draft', data: d, sortKey: d.createdAt || d.id })),
+  ].sort((a, b) => b.sortKey - a.sortKey).slice(0, 5);
+
+  combined.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'job-row job-row-live';
+    if (item.type === 'job') {
+      const j = item.data;
+      row.addEventListener('click', () => openJobDetail(j.id, 0));
+      const st = normalizeStatus(j.status);
+      const cfg = statusConfig[st];
+      row.innerHTML = `
+        <div class="job-dot ${getStatusDotClass(st)}"></div>
+        <div class="job-info">
+          <div class="job-name">${j.name}</div>
+          <div class="job-sub">${j.services.map(s => s.name).join(', ')} · ${cfg.label}</div>
+        </div>
+        <div class="job-amt">${fmt(j.total)}</div>`;
+    } else {
+      const d = item.data;
+      row.addEventListener('click', () => loadDraftToQuote(d.id));
+      row.innerHTML = `
+        <div class="job-dot ${getStatusDotClass('sent')}"></div>
+        <div class="job-info">
+          <div class="job-name">${d.name}</div>
+          <div class="job-sub">${d.summary || ''} · Awaiting Signature</div>
+        </div>
+        <div class="job-amt">${fmt(d.amount)}</div>`;
+    }
+    list.appendChild(row);
+  });
+}
+
+function addToRecent(name, summary, amount, jobId) {
   const list = document.getElementById('recentList');
   const row = document.createElement('div');
-  row.className = 'job-row';
+  row.className = 'job-row' + (jobId ? ' job-row-live' : '');
   row.style.animation = 'slideUp 0.3s cubic-bezier(0.4,0,0.2,1)';
+  if (jobId) { row._jobId = jobId; row.addEventListener('click', () => openJobDetail(jobId, 0)); }
   row.innerHTML = `
-    <div class="job-dot dot-signed"></div>
+    <div class="job-dot ${getStatusDotClass('needs_serviced')}"></div>
     <div class="job-info">
       <div class="job-name">${name}</div>
-      <div class="job-sub">${summary} · Signed ✓</div>
+      <div class="job-sub">${summary} · Needs Serviced</div>
     </div>
     <div class="job-amt">${fmt(amount)}</div>
   `;
@@ -1678,18 +2858,47 @@ function addToRecent(name, summary, amount) {
 let drafts = [];
 let activeDraftId = null;
 
-function showSavedToast() {
+function buildDraftData(status) {
   const name = document.getElementById('custName').value || 'Unknown Customer';
   const selected = services.filter(s => s.selected);
-  const summary = selected.map(s => s.name).join(', ');
-  const draft = {
-    id: Date.now(),
+  return {
+    quoteNum: currentQuoteNum,
     name,
-    summary: summary || 'No services selected',
+    summary: selected.map(s => s.name).join(', ') || 'No services selected',
     amount: total(),
-    date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'})
+    status: status || 'draft',
+    createdAt: currentCreatedAt,
+    date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'}),
+    custName:  document.getElementById('custName').value  || '',
+    custAddr:  document.getElementById('custAddr').value  || '',
+    custCity:  document.getElementById('custCity').value  || '',
+    custZip:   document.getElementById('custZip').value   || '',
+    custPhone: document.getElementById('custPhone').value || '',
+    custEmail: document.getElementById('custEmail').value || '',
+    custNotes: document.getElementById('custNotes').value || '',
+    services:  selected.map(s => ({ name: s.name, qty: s.qty })),
   };
-  drafts.unshift(draft);
+}
+
+function upsertDraft(data) {
+  if (activeDraftId !== null) {
+    const idx = drafts.findIndex(d => d.id == activeDraftId);
+    if (idx !== -1) {
+      data.id = drafts[idx].id;
+      drafts[idx] = data;
+    } else {
+      data.id = Date.now();
+      drafts.unshift(data);
+    }
+  } else {
+    data.id = Date.now();
+    drafts.unshift(data);
+  }
+  activeDraftId = null;
+}
+
+function showSavedToast() {
+  upsertDraft(buildDraftData('draft'));
   renderDrafts();
 
   const toast = document.getElementById('savedToast');
@@ -1699,29 +2908,536 @@ function showSavedToast() {
 }
 
 function renderDrafts() {
+  updateHomeStats();
   const section = document.getElementById('draftsSection');
   const list    = document.getElementById('draftsList');
   const badge   = document.getElementById('draftsBadge');
 
-  if (drafts.length === 0) {
+  const visibleDrafts = drafts.filter(d => (d.status || 'draft') === 'draft');
+  if (visibleDrafts.length === 0) {
     section.style.display = 'none';
     return;
   }
 
   section.style.display = 'block';
-  badge.textContent = drafts.length + ' unsent';
+  badge.textContent = visibleDrafts.length + ' unsent';
   list.innerHTML = '';
 
-  drafts.forEach((d, i) => {
+  visibleDrafts.forEach(d => {
     const row = document.createElement('div');
     row.className = 'draft-row';
+    const title = d.quoteNum ? '#' + d.quoteNum + ' \u2014 ' + d.name : d.name;
     row.innerHTML = `
       <div class="draft-icon">📝</div>
       <div class="draft-info">
-        <div class="draft-name">${d.name}</div>
+        <div class="draft-name">${title}</div>
         <div class="draft-sub">${d.summary} · Saved ${d.date}</div>
       </div>
       <div class="draft-amt">$${d.amount.toLocaleString()}</div>
-      <div class="draft-delete" title="Delete draft" onclick="deleteDraft(${i}, event)">✕</div>
+      <div class="draft-delete" title="Send quote" onclick="markDraftSent('${d.id}', event)" style="color:var(--ink);font-size:13px;font-weight:700">↗</div>
+      <div class="draft-delete" title="Delete draft" onclick="deleteDraft('${d.id}', event)">✕</div>
     `;
-    row.addEventListener('click', () => { activeDraftId = d.id; go(3)
+    row.addEventListener('click', () => {
+      activeDraftId   = d.id;
+      currentCreatedAt = d.createdAt || 0;
+      currentQuoteNum  = d.quoteNum  || 0;
+      document.getElementById('custName').value  = d.custName  || '';
+      document.getElementById('custAddr').value  = d.custAddr  || '';
+      document.getElementById('custCity').value  = d.custCity  || '';
+      document.getElementById('custZip').value   = d.custZip   || '';
+      document.getElementById('custPhone').value = d.custPhone || '';
+      document.getElementById('custEmail').value = d.custEmail || '';
+      document.getElementById('custNotes').value = d.custNotes || '';
+      if (d.services && d.services.length) {
+        services.forEach(s => { s.selected = false; s.qty = 1; });
+        d.services.forEach(ds => {
+          const sv = services.find(s => s.name === ds.name);
+          if (sv) { sv.selected = true; sv.qty = ds.qty || 1; }
+        });
+      }
+      go(3);
+    });
+    list.appendChild(row);
+  });
+}
+
+function markDraftSent(id, e) {
+  e.stopPropagation();
+  const d = drafts.find(d => d.id == id);
+  if (d) d.status = 'sent';
+  renderDrafts();
+  updateHomeStats();
+}
+
+function deleteDraft(id, e) {
+  e.stopPropagation();
+  drafts = drafts.filter(d => d.id != id);
+  renderDrafts();
+}
+
+// ── JOB DETAIL ──
+let _detailFromScreen = 0;
+let _detailJobId = null;
+
+function openJobDetail(jobId, fromScreen) {
+  _detailJobId = jobId;
+  const job = signedJobs.find(j => j.id === jobId);
+  if (!job) return;
+  _detailFromScreen = fromScreen !== undefined ? fromScreen : 0;
+
+  // Back buttons
+  const backFn = () => go(_detailFromScreen);
+  document.getElementById('jobDetailBack').onclick    = backFn;
+  document.getElementById('jobDetailBackBtn').onclick = backFn;
+  document.getElementById('jobDetailTitle').textContent = 'Invoice #' + job.quoteNum;
+
+  // Reset delete button state
+  const delBtn = document.getElementById('deleteJobBtn');
+  delBtn.dataset.confirming = '';
+  delBtn.textContent = 'Delete Job';
+
+  // Contextual status action button
+  const actionBtn = document.getElementById('jobStatusActionBtn');
+  const st = normalizeStatus(job.status);
+  if (st === 'needs_serviced' || st === 'signed') {
+    actionBtn.style.display = '';
+    actionBtn.textContent = '📤 Send Invoice';
+    actionBtn.onclick = () => {
+      updateJobStatus(job.id, 'invoiced');
+      actionBtn.textContent = '✓ Invoice Sent';
+      actionBtn.disabled = true;
+    };
+    actionBtn.disabled = false;
+  } else if (st === 'invoiced') {
+    actionBtn.style.display = '';
+    actionBtn.textContent = '💳 Collect Payment';
+    actionBtn.onclick = () => openPaymentScreen(job.id);
+    actionBtn.disabled = false;
+  } else {
+    actionBtn.style.display = 'none';
+  }
+
+  // Build detail doc
+  const b = job.business;
+  const linesHtml = job.services.map(s => `
+    <div class="line-item">
+      <div>
+        <div class="li-name">${s.name}${s.qty > 1 ? ' × ' + s.qty : ''}</div>
+        <div class="li-desc">${s.desc}</div>
+      </div>
+      <div class="li-price">${fmt(s.rate * s.qty)}</div>
+    </div>`).join('');
+
+  const addrLine = [job.addr, job.city, job.zip].filter(Boolean).join(', ');
+
+  document.getElementById('jobDetailDoc').innerHTML = `
+    <div class="quote-brand">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="brand-logo">${(b.name || 'S')[0].toUpperCase()}</div>
+        <div>
+          <div class="brand-name">${b.name}</div>
+          <div class="brand-contact">${b.email} · ${b.phone}</div>
+        </div>
+      </div>
+      <div class="quote-badge">INVOICE</div>
+    </div>
+    <div class="quote-to">
+      <div class="qt-label">Billed To</div>
+      <div class="qt-name">${job.name}</div>
+      ${addrLine ? `<div class="qt-addr">${addrLine}</div>` : ''}
+      ${job.email ? `<div class="qt-addr">${job.email}${job.phone ? ' · ' + job.phone : ''}</div>` : ''}
+      <div class="qt-addr" style="margin-top:6px;font-size:11px;color:var(--muted)">
+        Invoice #${job.quoteNum} · ${job.date}
+        <span style="color:#2a7a55;font-weight:700;margin-left:6px">✓ Signed</span>
+      </div>
+    </div>
+    <div class="line-items">${linesHtml}</div>
+    <div class="quote-total-section">
+      <div class="qt-total-lbl">Total</div>
+      <div class="qt-total-amt">${fmt(job.total)}</div>
+    </div>
+    <div class="quote-note">${job.terms}</div>
+    ${job.signature ? `
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
+      <div class="qt-label" style="margin-bottom:8px">Customer Signature</div>
+      <div style="background:var(--surface);border-radius:10px;padding:10px 12px;display:inline-block">
+        <img src="${job.signature}" style="max-width:100%;height:72px;object-fit:contain;display:block">
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">
+        ${job.name}<br>${job.signedAtHuman || job.date}
+      </div>
+    </div>` : ''}`;
+
+  go(8);
+}
+
+// ── PAYMENT SCREEN ──
+function payMethodCard(id, icon, title, sub, bodyHtml) {
+  return `<div class="pay-card" id="payCard-${id}">
+    <div class="pay-card-head" onclick="togglePayCard('${id}')">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+        <div style="font-size:20px;flex-shrink:0;line-height:1;width:28px;text-align:center">${icon}</div>
+        <div style="min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--ink)">${title}</div>
+          <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sub}</div>
+        </div>
+      </div>
+      <i class="pay-card-chevron" id="payChev-${id}">›</i>
+    </div>
+    <div class="pay-card-body" id="payBody-${id}" style="display:none;padding-top:12px">${bodyHtml}</div>
+  </div>`;
+}
+
+function togglePayCard(id) {
+  const body = document.getElementById('payBody-' + id);
+  const chev = document.getElementById('payChev-' + id);
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  chev.style.transform = open ? '' : 'rotate(90deg)';
+}
+
+async function attemptTapToPay(jobId) {
+  const job = signedJobs.find(j => j.id === jobId);
+  if (!job) return;
+  if (!window.PaymentRequest) {
+    document.getElementById('tapTarget').style.display = 'none';
+    document.getElementById('tapFallback').style.display = 'block';
+    return;
+  }
+  const methods = [{ supportedMethods: 'basic-card', data: { supportedNetworks: ['visa','mastercard','amex','discover'] } }];
+  const details = {
+    total: { label: `Invoice #${job.quoteNum}`, amount: { currency: 'USD', value: job.total.toFixed(2) } },
+    displayItems: job.services.map(s => ({ label: s.name + (s.qty > 1 ? ' × ' + s.qty : ''), amount: { currency: 'USD', value: (s.rate * s.qty).toFixed(2) } })),
+  };
+  try {
+    const req = new PaymentRequest(methods, details);
+    const canPay = await req.canMakePayment();
+    if (!canPay) {
+      document.getElementById('tapTarget').style.display = 'none';
+      document.getElementById('tapFallback').style.display = 'block';
+      return;
+    }
+    const response = await req.show();
+    await response.complete('success');
+    updateJobStatus(job.id, 'paid');
+    showToast('Payment received ✓');
+    setTimeout(() => go(0), 700);
+  } catch(e) {
+    if (e.name !== 'AbortError') showToast('Payment cancelled');
+  }
+}
+
+function toggleAchReveal(el, full) {
+  const disp = document.getElementById('achAccDisplay');
+  if (!disp) return;
+  const masked = '•••• ' + full.slice(-4);
+  if (disp.textContent.includes('•')) { disp.textContent = full; el.textContent = '🙈'; }
+  else { disp.textContent = masked; el.textContent = '👁'; }
+}
+
+function openPaymentScreen(jobId) {
+  const job = signedJobs.find(j => j.id === jobId);
+  if (!job) return;
+  const p = config.payment || {};
+
+  document.getElementById('paymentBack').onclick = () => openJobDetail(job.id, _detailFromScreen);
+
+  // ── Hero ──
+  const addrLine = [job.addr, job.city, job.zip].filter(Boolean).join(', ');
+  document.getElementById('paymentHero').innerHTML = `
+    <div style="font-family:'DM Serif Display',serif;font-size:44px;color:var(--paper);letter-spacing:-2px;line-height:1;margin-bottom:10px">${fmt(job.total)}</div>
+    <div style="display:inline-flex;align-items:center;background:rgba(201,168,76,0.18);border:1px solid rgba(201,168,76,0.32);border-radius:20px;padding:4px 12px;margin-bottom:14px">
+      <span style="font-size:9px;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase">Invoice Due</span>
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(247,244,239,0.5)">Invoice #${job.quoteNum} &nbsp;·&nbsp; ${job.name}</div>
+    ${addrLine ? `<div style="font-size:10px;color:rgba(247,244,239,0.35);margin-top:3px">${addrLine}</div>` : ''}`;
+
+  // ── Method cards ──
+  const hasAch = p.achBankName || p.achAccount || p.achRouting || p.achAccountName;
+  let cards = '';
+
+  // 1. Tap to Pay
+  if (p.tapToPayEnabled) {
+    const tapBody = `
+      <div id="tapTarget" onclick="attemptTapToPay(${job.id})"
+        style="background:var(--ink2);border-radius:14px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;margin-bottom:8px;animation:tapPulse 2s ease-in-out infinite">
+        <div style="font-size:44px;line-height:1">📡</div>
+        <div style="font-size:14px;font-weight:700;color:var(--paper)">Tap to Collect ${fmt(job.total)}</div>
+        <div style="font-size:11px;color:rgba(247,244,239,0.6);text-align:center">Customer holds card or phone to back of device</div>
+      </div>
+      <div id="tapFallback" style="display:none;text-align:center;padding:12px 8px;font-size:12px;color:var(--muted);line-height:1.6">
+        Not supported on this device — use a different method.
+      </div>`;
+    cards += payMethodCard('tap', '📡', 'Tap to Pay', 'Collect card payment on this device', tapBody);
+  }
+
+  // 2. Stripe
+  if (p.stripeLink) {
+    const stripeBody = `
+      <button onclick="window.open(${JSON.stringify(p.stripeLink)},'_blank')" class="btn btn-primary" style="margin-bottom:10px">Open Payment Link ↗</button>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6;text-align:center">Or have the customer scan the QR at the link.<br>Payment confirmation is manual — tap <strong>Mark as Paid</strong> once confirmed.</div>`;
+    cards += payMethodCard('stripe', '💳', 'Stripe', p.stripeLink.replace(/^https?:\/\//, ''), stripeBody);
+  }
+
+  // 3. Venmo
+  if (p.venmo) {
+    const handle = '@' + p.venmo.replace(/^@/, '');
+    const venmoDeep = `venmo://paycharge?txn=pay&recipients=${encodeURIComponent(p.venmo.replace(/^@/,''))}&amount=${job.total}&note=${encodeURIComponent('Invoice #' + job.quoteNum)}`;
+    const venmoBody = `
+      <div class="pay-row" style="margin-bottom:12px">
+        <span class="pay-lbl">Handle</span><span class="pay-val">${handle}</span>
+        <span class="pay-copy" onclick="copyPayValue(this,${JSON.stringify(handle)})">⎘</span>
+      </div>
+      <a href="${venmoDeep}" style="display:block;text-decoration:none">
+        <button class="btn btn-primary" style="background:#008CFF">Open in Venmo ↗</button>
+      </a>`;
+    cards += payMethodCard('venmo', '💸', 'Venmo', handle, venmoBody);
+  }
+
+  // 4. Cash App
+  if (p.cashApp) {
+    const tag = '$' + p.cashApp.replace(/^\$/, '');
+    const cashDeep = `cashapp://cash.app/pay/${encodeURIComponent(p.cashApp.replace(/^\$/,''))}/${job.total}`;
+    const cashBody = `
+      <div class="pay-row" style="margin-bottom:12px">
+        <span class="pay-lbl">$Cashtag</span><span class="pay-val">${tag}</span>
+        <span class="pay-copy" onclick="copyPayValue(this,${JSON.stringify(tag)})">⎘</span>
+      </div>
+      <a href="${cashDeep}" style="display:block;text-decoration:none">
+        <button class="btn btn-primary" style="background:#00D632;color:#000">Open in Cash App ↗</button>
+      </a>`;
+    cards += payMethodCard('cashapp', '💵', 'Cash App', tag, cashBody);
+  }
+
+  // 5. Zelle
+  if (p.zelle) {
+    const zelleBody = `
+      <div class="pay-row" style="margin-bottom:12px">
+        <span class="pay-lbl">Send To</span><span class="pay-val">${p.zelle}</span>
+        <span class="pay-copy" onclick="copyPayValue(this,${JSON.stringify(p.zelle)})">⎘</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">Search for this ${p.zelle.includes('@') ? 'email' : 'phone number'} in your bank app. Zelle has no payment deep link.</div>
+      <a href="https://enroll.zellepay.com" target="_blank" style="display:block;text-decoration:none">
+        <button class="btn btn-outline">Open Zelle ↗</button>
+      </a>`;
+    cards += payMethodCard('zelle', '⚡', 'Zelle', p.zelle, zelleBody);
+  }
+
+  // 6. ACH
+  if (hasAch) {
+    const masked = p.achAccount ? '•••• ' + p.achAccount.slice(-4) : '';
+    let achRows = '';
+    if (p.achAccountName) achRows += `<div class="pay-row"><span class="pay-lbl">Name</span><span class="pay-val">${p.achAccountName}</span><span class="pay-copy" onclick="copyPayValue(this,${JSON.stringify(p.achAccountName)})">⎘</span></div>`;
+    if (p.achAccount)     achRows += `<div class="pay-row"><span class="pay-lbl">Account</span><span class="pay-val" id="achAccDisplay">${masked}</span><span class="pay-copy" onclick="toggleAchReveal(this,${JSON.stringify(p.achAccount)})">👁</span></div>`;
+    if (p.achRouting)     achRows += `<div class="pay-row"><span class="pay-lbl">Routing</span><span class="pay-val">${p.achRouting}</span><span class="pay-copy" onclick="copyPayValue(this,${JSON.stringify(p.achRouting)})">⎘</span></div>`;
+    if (p.achBankName)    achRows += `<div class="pay-row"><span class="pay-lbl">Bank</span><span class="pay-val" style="font-family:'DM Sans',sans-serif">${p.achBankName}</span></div>`;
+    cards += payMethodCard('ach', '🏦', 'ACH / Bank Transfer', p.achBankName || 'Bank transfer', achRows);
+  }
+
+  if (!cards) {
+    cards = `<div style="text-align:center;padding:32px 16px;color:var(--muted);font-size:13px;line-height:1.7">No payment methods configured.<br>Add them in <strong>Settings → Payment Methods</strong>.</div>`;
+  }
+
+  document.getElementById('paymentMethods').innerHTML = `
+    <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Payment Methods</div>
+    ${cards}`;
+
+  // ── Notes ──
+  document.getElementById('paymentNotes').innerHTML = p.notes ? `
+    <div style="background:var(--gold-lt);border:1px solid rgba(201,168,76,0.28);border-radius:10px;padding:12px 14px;margin-top:4px;margin-bottom:8px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">Notes</div>
+      <div style="font-size:12px;color:var(--ink2);line-height:1.6;font-style:italic">${p.notes}</div>
+    </div>` : '';
+
+  // ── Mark as Paid ──
+  const markBtn = document.getElementById('paymentMarkPaidBtn');
+  markBtn.textContent = '✓ Mark as Paid';
+  markBtn.disabled = false;
+  markBtn.onclick = () => {
+    updateJobStatus(job.id, 'paid');
+    markBtn.textContent = '✓ Paid';
+    markBtn.disabled = true;
+    showToast('Payment recorded ✓');
+    setTimeout(() => go(0), 700);
+  };
+
+  // ── Reminder ──
+  const reminderBtn = document.getElementById('paymentReminderBtn');
+  if (job.email) {
+    reminderBtn.style.display = 'block';
+    const methodLines = [];
+    if (p.tapToPayEnabled) methodLines.push('Tap to Pay (in person)');
+    if (p.stripeLink) methodLines.push('Card (online): ' + p.stripeLink);
+    if (p.venmo) methodLines.push('Venmo: @' + p.venmo.replace(/^@/, ''));
+    if (p.cashApp) methodLines.push('Cash App: $' + p.cashApp.replace(/^\$/, ''));
+    if (p.zelle) methodLines.push('Zelle: ' + p.zelle);
+    if (hasAch) methodLines.push('Bank Transfer — Routing: ' + p.achRouting + '  Account: ' + p.achAccount);
+    const subj = encodeURIComponent(`Invoice #${job.quoteNum} — ${fmt(job.total)} due`);
+    const body = encodeURIComponent(
+      `Hi ${job.name},\n\nThis is a friendly reminder that Invoice #${job.quoteNum} for ${fmt(job.total)} is due.\n\n`
+      + (methodLines.length ? 'Payment methods:\n' + methodLines.map(l => '  • ' + l).join('\n') + '\n\n' : '')
+      + `Please reach out with any questions.\n\nThank you,\n${config.business.name}`
+    );
+    reminderBtn.onclick = () => { window.location.href = `mailto:${job.email}?subject=${subj}&body=${body}`; };
+  } else {
+    reminderBtn.style.display = 'none';
+  }
+
+  // Check Tap to Pay support after render
+  if (p.tapToPayEnabled) {
+    if (!window.PaymentRequest) {
+      const tt = document.getElementById('tapTarget');
+      const fb = document.getElementById('tapFallback');
+      if (tt) tt.style.display = 'none';
+      if (fb) fb.style.display = 'block';
+    }
+  }
+
+  go(10);
+}
+
+function copyPayValue(el, val) {
+  navigator.clipboard.writeText(val)
+    .then(() => { showToast('Copied'); if (el) { const prev = el.textContent; el.textContent = '✓'; setTimeout(() => el.textContent = prev, 1200); } })
+    .catch(() => showToast(val));
+}
+
+function updateJobStatus(jobId, newStatus) {
+  const job = signedJobs.find(j => j.id === jobId);
+  if (!job) return;
+  job.status = newStatus;
+  saveJobs();
+  updateHomeStats();
+}
+
+function deleteJob() {
+  const btn = document.getElementById('deleteJobBtn');
+  if (btn.dataset.confirming) {
+    // Second tap — actually delete
+    signedJobs = signedJobs.filter(j => j.id !== _detailJobId);
+    saveJobs();
+    updateHomeStats();
+    // Also remove from recent list on home screen
+    const recentList = document.getElementById('recentList');
+    if (recentList) {
+      [...recentList.children].forEach(row => {
+        if (row._jobId === _detailJobId) row.remove();
+      });
+    }
+    go(_detailFromScreen);
+  } else {
+    btn.dataset.confirming = 'yes';
+    btn.textContent = 'Tap again to confirm delete';
+    setTimeout(() => {
+      btn.dataset.confirming = '';
+      btn.textContent = 'Delete Job';
+    }, 3000);
+  }
+}
+
+function printInvoice() {
+  const job = signedJobs.find(j => j.id === _detailJobId);
+  if (!job) return;
+
+  const b = job.business;
+  const addrLine = [job.addr, job.city, job.zip].filter(Boolean).join(', ');
+  const rowsHtml = job.services.map(s => `
+    <tr>
+      <td><strong>${s.name}${s.qty > 1 ? ' × ' + s.qty : ''}</strong><br><span style="color:#888;font-size:11px">${s.desc}</span></td>
+      <td>${fmt(s.rate * s.qty)}</td>
+    </tr>`).join('');
+
+  document.getElementById('printArea').innerHTML = `
+    <div class="p-brand">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="p-logo">${(b.name || 'S')[0].toUpperCase()}</div>
+        <div>
+          <div class="p-biz-name">${b.name}</div>
+          <div class="p-biz-sub">${b.email} · ${b.phone}</div>
+        </div>
+      </div>
+      <div class="p-badge">INVOICE</div>
+    </div>
+    <div class="p-to">
+      <div class="p-to-label">Billed To</div>
+      <div class="p-to-name">${job.name}</div>
+      ${addrLine ? `<div class="p-to-sub">${addrLine}</div>` : ''}
+      ${job.email  ? `<div class="p-to-sub">${job.email}</div>` : ''}
+      ${job.phone  ? `<div class="p-to-sub">${job.phone}</div>` : ''}
+      <div class="p-to-sub" style="margin-top:6px">Invoice #${job.quoteNum} · ${job.date}</div>
+    </div>
+    <table>
+      <thead><tr><th>Service</th><th>Amount</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    <div class="p-total-row">
+      <span class="p-total-lbl">Total Due</span>
+      <span class="p-total-amt">${fmt(job.total)}</span>
+    </div>
+    <div class="p-terms">${job.terms}</div>
+    ${job.signature ? `
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e0e0e0">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#888;margin-bottom:10px">Customer Signature</div>
+      <img src="${job.signature}" style="height:80px;display:block;margin-bottom:6px">
+      <div style="font-size:12px;color:#444;font-weight:600">${job.name}</div>
+      <div style="font-size:11px;color:#888">Signed ${job.signedAtHuman || job.date} · Invoice #${job.quoteNum}</div>
+    </div>` : `<div class="p-signed">✓ Signed ${job.signedAtHuman || job.date}</div>`}`;
+
+  // ── AUDIT TRAIL PAGE 2 ──
+  const audit = getAuditRecord(job.quoteNum);
+  if (audit) {
+    const lineItemsHtml = (audit.lineItems || []).map(li =>
+      `<div class="p-audit-row"><span class="p-audit-lbl">${li.name}${li.qty > 1 ? ' \xD7 ' + li.qty : ''}</span><span class="p-audit-val">${fmt(li.subtotal)}</span></div>`
+    ).join('');
+    // createdAt may be 0 on records saved before this field was added — fall back to job record then signedAt
+    const createdMs = audit.createdAt || job.createdAt || job.signedAt;
+    document.getElementById('printArea').innerHTML += `
+    <div class="p-audit-page">
+      <div class="p-audit-title">Audit Trail — Invoice #${audit.quoteNumber}</div>
+
+      <div class="p-audit-section">Transaction</div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Quote Number</span><span class="p-audit-val">#${audit.quoteNumber}</span></div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Created</span><span class="p-audit-val">${fmtTimestamp(createdMs)}<br><span style="font-family:'Courier New',monospace;font-size:10px;color:#aaa">${createdMs}</span></span></div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Signed</span><span class="p-audit-val">${audit.signedAtHuman}<br><span style="font-family:'Courier New',monospace;font-size:10px;color:#aaa">${audit.signedAt}</span></span></div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Total</span><span class="p-audit-val">${fmt(audit.total)}</span></div>
+
+      <div class="p-audit-section">Business</div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Name</span><span class="p-audit-val">${audit.businessName}</span></div>
+      ${audit.businessEmail ? `<div class="p-audit-row"><span class="p-audit-lbl">Email</span><span class="p-audit-val">${audit.businessEmail}</span></div>` : ''}
+      ${audit.businessPhone ? `<div class="p-audit-row"><span class="p-audit-lbl">Phone</span><span class="p-audit-val">${audit.businessPhone}</span></div>` : ''}
+
+      <div class="p-audit-section">Customer</div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Name</span><span class="p-audit-val">${audit.customerName}</span></div>
+      ${audit.customerEmail ? `<div class="p-audit-row"><span class="p-audit-lbl">Email</span><span class="p-audit-val">${audit.customerEmail}</span></div>` : ''}
+
+      <div class="p-audit-section">Line Items</div>
+      ${lineItemsHtml}
+
+      <div class="p-audit-section">Consent</div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Consent Given</span><span class="p-audit-val">${audit.consentGiven ? 'Yes' : 'No'}</span></div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Consent Text</span><span class="p-audit-val" style="font-size:10px;color:#666">${audit.consentText}</span></div>
+
+      <div class="p-audit-section">Document Integrity</div>
+      <div class="p-audit-row"><span class="p-audit-lbl">Hash Algorithm</span><span class="p-audit-val">SHA-256</span></div>
+      <div class="p-audit-hash">${audit.documentHash}</div>
+
+      <div class="p-audit-section">Client Info</div>
+      <div class="p-audit-ua">${audit.userAgent}</div>
+
+      ${audit.signatureImage ? `
+      <div class="p-audit-section">Signature</div>
+      <div style="margin-top:8px">
+        <img src="${audit.signatureImage}" style="height:60px;display:block;border:1px solid #e0e0e0;border-radius:6px;padding:6px;print-color-adjust:exact;-webkit-print-color-adjust:exact">
+        <div style="font-size:10px;color:#888;margin-top:4px">${audit.customerName} — Signed ${audit.signedAtHuman}</div>
+      </div>` : ''}
+    </div>`;
+  }
+
+  window.print();
+}
+
+// ── INIT ──
+applyConfig();
+</script>
+</body>
+</html>
